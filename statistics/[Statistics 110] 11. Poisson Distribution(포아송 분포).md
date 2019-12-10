@@ -1,5 +1,7 @@
 ## [Statistics 110] 11. Poisson Distribution(포아송 분포)
 
+이 글은 하버드대학 Joe Blitzstein 교수님의 statistics 110 강좌를 듣고 정리한 내용입니다.
+
 
 
 **수업 전 자주하는 실수 정리:**
@@ -115,7 +117,6 @@ P(X=k) & = \binom{n}{k} p^k (1-p)^{n-k} \newline
 \end{align}
 $$
 
-
 ---
 
 **이항분포와 포아송 분포의 관계**
@@ -167,3 +168,13 @@ $$
 P(X \geq 1) = 1 - P(X=0) \approx 1 - e^{-\lambda} \frac{\lambda^0}{0!} = 1 - e^{-\lambda}
 $$
 이는 간단히 계산기로 구할 수 있는 결과입니다.
+
+
+
+---
+
+**Reference**
+
+
+
+https://www.edwith.org/harvardprobability/lecture/30904/
