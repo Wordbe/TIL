@@ -267,3 +267,11 @@ metric의 단위는? 모름
 
 ![](https://i.ibb.co/5G97GvH/image.png)
 
+
+
+---
+
+**Reference**
+
+cose342 "Computer Network", Juho Choi, 2019-2
+
