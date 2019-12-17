@@ -36,6 +36,16 @@ graph나 data manifolds 상에서 데이터를 어떻게 분석할 것인가?
 
   "DeepWalk, 2014"
 
+![](https://i.ibb.co/Tt00X29/image.png)
+
+왼쪽은 Karate graph 인풋, 오른쪽은 representation 아웃풋입니다.
+
+DeepWalk는 그래프에서 latent representation을 학습할 수 있습니다.
+
+
+
+
+
 
 
 ---
@@ -60,14 +70,15 @@ graph나 data manifolds 상에서 데이터를 어떻게 분석할 것인가?
 
 **종류**
 
-* 전통적 graph embedding
-  - IsoMap, LLE, Laplacian Eigenmap
+* **전통적 graph embedding**
+  
+- IsoMap, LLE, Laplacian Eigenmap
+  
+* **Graph factorization** (Ahmed et al., 2013) - 무향그래프(undirected graph) 사용
 
-* Graph factorization (Ahmed et al., 2013) - 무향그래프(undirected graph) 사용
+* **Neural word embeddings** (Bengio et al., 2003)
 
-* Neural word embeddings (Bengio et al., 2003)
-
-* Word2vec (skipgram)
+* **Word2vec (skipgram)**
 
   단어 간 유사도를 반영할 수 있도록 단어의 의미를 벡터화 한 방법
 
@@ -77,9 +88,9 @@ graph나 data manifolds 상에서 데이터를 어떻게 분석할 것인가?
 
   skip-gram은 중간에 있는 단어로 주변 단어를 예측하는 방법입니다.
 
-* LINE: Large-scale Information Network Embedding (WWW, 2015)
-* DeepWalk: Online Learning of Social Representation (KDD, 2014)
-* node2vec: Scalable Feature Learning of Networks (KDD, 2016)
+* **LINE: Large-scale Information Network Embedding** (WWW, 2015)
+* **DeepWalk: Online Learning of Social Representation** (KDD, 2014)
+* **node2vec: Scalable Feature Learning of Networks** (KDD, 2016)
 
 
 
@@ -111,6 +122,8 @@ graph나 data manifolds 상에서 데이터를 어떻게 분석할 것인가?
 
 **First-order proximity** : KL divergence between $p_1, \hat{p}_1$
 
+* LINE에서 first-order proximity는 점 사이의 local pairwise proximity(지역 근접쌍)를 말합니다.
+
 ​	현실세계 네트워크에서 두 노드의 유사도를 측정할 때 사용됩니다.
 
 ​	두 노드의 가중치가 큰 엣지로 연결되어 있을 때 값이 큽니다.
@@ -119,15 +132,23 @@ graph나 data manifolds 상에서 데이터를 어떻게 분석할 것인가?
 $$
 p_1(v_i, v_j) = \frac{w_{ij}}{\sum_{(m, n) \in E} w_{mn}} \ \ \hat{p}_1(v_i, v_j) = \frac{exp(u_i^T u_j)}{\sum_{(m, n) \in V \times V} exp(u_m^T u_n)}
 $$
-$p_1$은 ground truth로 사용됩니다. 
+$p_1$은 경험적 확률(empirical probabilitiy)로 ground truth로 사용됩니다. 
+
+$\hat{p}_1$은 각 무향 에지$(i, j)$마다 점 $v_i, v_j$사이의 결합확률(joint probability)을 의미합니다.
 
 모든 정점 쌍 에 대해 $\hat{p}_1$를 구하여 $p_1$과의 KL divergence를 구한 후, 이 거리가 최소가 되는 값으로 학습을 진행시킵니다.
+
+
+
+아래 그림에서 보라색 두 점이 각각 $v_i, v_j$입니다.
 
 ![](https://i.ibb.co/j5FkjzZ/image.png)
 
 
 
-**Second-order proximity**
+
+
+**Second-order proximity** : KL Divergence between $p_2, \hat{p}_2$
 
 ​	두 노드가 비슷한 이웃들(neighbors)과 연결되어 있을 때 큽니다.
 
@@ -135,15 +156,18 @@ $p_1$은 ground truth로 사용됩니다.
 
 
 $$
-p_2(v_j \vert v_i) = \frac{w_{ij}}{\sum_{k \in N(i)} w_{ik}} \ \ \hat{p}_2(v_i \vert v_j) = \frac{exp(u_i^T u_j)}{\sum_{k \in V} exp(u_k^T u_i)}
+p_2(v_j \vert v_i) = \frac{w_{ij}}{\sum_{k \in N(i)} w_{ik}} \ \ \hat{p}_2(v_j \vert v_i) = \frac{exp(u_i^T u_j)}{\sum_{k \in V} exp(u_k^T u_i)}
 $$
 
 
+
+아래 그림에서 보라색 두 점이 각각 $v_i, v_j$입니다.
+
 ![](https://i.ibb.co/sbGDb1Z/image.png)
 
-$p_2$를 미리 구한 뒤,
+$p_2$는 경험적 분포(empirical distribution)입니다. 이를 미리 구한 뒤,
 
-각 점마다 $\hat{p}_2$를 구해서 KL divergence로 비교합니다.
+각 점마다 조건부 분포(conditional distribution) $\hat{p}_2$를 구해서 KL divergence로 비교합니다.
 
 
 
@@ -155,9 +179,9 @@ $p_2$를 미리 구한 뒤,
 
 **Optimization Tricks**
 
-SGD + Negative sampling
+**SGD + Negative sampling**
 
-​	임의로 한 에지와 여러 개의 negative 에지들 샘플링
+​	**임의로 한 에지와 여러 개의 negative 에지들 샘플링**
 
 
 
@@ -165,15 +189,15 @@ SGD + Negative sampling
 
 ​	그레디언트의 Large variance 
 
-​	이것을 해결하는 solution으로 edge sampling이 있습니다.
+​	이것을 해결하는 solution으로 **edge sampling**이 있습니다.
 
-​	weight과 binary edges 관한 sampling edges
+​	→ weight과 binary edges 관한 edges를 샘플링합니다.
 
 
 
 Complexity : $O(d K|E|)$
 
-​	dimensionality d, negative samples 개수 k, edges 수 E
+​	dimensionality d, negative samples 개수 K, edges 수 E
 
 
 
@@ -185,7 +209,7 @@ Complexity : $O(d K|E|)$
 
 Word2vec의 skipgram과 유사합니다.
 
-'문장'으로 네트워크를 임의 탐색(random walk)
+네트워크에서 임의 탐색(random walk)하는 것을 "문장"으로 간주합니다.
 
 
 
@@ -209,7 +233,7 @@ graph G(V, E),
 
 Output 으로는
 
-matrix of vertex representation $\Phi \in \mathbb{R}^{\vert V \vert \times d}$ 이 나옵니다.
+matrix of vertex representation(점 표현 행렬) $\Phi \in \mathbb{R}^{\vert V \vert \times d}$ 이 나옵니다.
 
 
 
@@ -279,9 +303,11 @@ representation $\Phi$를 업데이트 시킵니다.
 
 ### 3) node2vec : Scalable Feature Learning for Networks
 
-BFS : homophily(friendships) 의 성질과
+BFS : homophily(friendships) 의 성질과 (local structure 파악)
 
-DFS : structural equivalence 성질 둘 다를 이용
+DFS : structural equivalence 성질(global structure 파악)
+
+둘 다를 이용 
 
 
 
@@ -311,9 +337,9 @@ DFS : structural equivalence 성질 둘 다를 이용
 
 ### Embedding
 
-목적: node를 임베딩 공간으로 인코딩(예. dot product)
+**목적: node를 임베딩 공간으로 인코딩(예. dot product)**
 
-원래 그래프에서 유사도를 보존하면서 인코딩하는 것이 관건
+**원래 그래프에서 유사도를 보존하면서 인코딩하는 것이 관건**
 
 ![](https://i.ibb.co/PrJxBf3/image.png)
 
@@ -325,13 +351,17 @@ DFS : structural equivalence 성질 둘 다를 이용
 
 
 
-GNN은 Inductive learning을 가능케 합니다.
+---
 
-또한 parameter sharing이 가능합니다.
+**Graph Neural Networks**
 
-ENC(v) 는 그래프 구조에 의존적인 함수입니다.
+1) GNN은 Inductive learning을 가능케 합니다.
 
-node features를 포함합니다.
+2) 또한 parameter sharing이 가능합니다.
+
+3) ENC(v) 는 그래프 구조에 의존적인 함수입니다.
+
+4) node features를 포함합니다.
 
 
 
@@ -349,6 +379,8 @@ node features를 포함합니다.
 
 
 
+
+
 ---
 
 ### **1) GNN : Basics**
@@ -358,7 +390,7 @@ node features를 포함합니다.
 
 * $X \in \mathbb{R}^{m \times \vert V \vert}$ : node feature (노드 특징)
 
-* 핵심 아이디어 : 그래프 구조는 이웃(neighborhoods)을 정의한다.
+* 핵심 아이디어 : **그래프 구조는 이웃(neighborhoods)을 정의한다.**
 * 지역 이웃(local neighborhoods)에서의 Aggregation(또는 message passing)
 
 
@@ -369,7 +401,7 @@ node features를 포함합니다.
 
 
 
-각 노드마다 정의된 인풋 특징으로 시작합니다.
+각 노드마다 정의된 인풋 특징(input feature)으로 시작합니다.
 $$
 h^0_{v} = x_v
 $$
@@ -382,7 +414,7 @@ $$
 
 $\sigma$는 Nonlinear transform으로 ReLU, tanh, sigmoid 등을 사용할 수 있습니다.
 
-점 v의 k 번째 특징($h^k_v$)은 k-1번째에서의 이웃한 점의 평균(Averaging message from neighbors)과 k-1번째의 점 v에 $B_k$를 곱한 값(Linear transform of its previous layer's embedding)으로 표현할 수 있습니다. 
+점 v의 k 번째 특징($h^k_v$)은 k-1번째에서의 이웃한 점의 평균(Averaging message from neighbors)과 k-1번째의 점 v 특징에 bias matrix $B_k$를 곱한 값(Linear transform of its previous layer's embedding)으로 표현할 수 있습니다. 
 $$
 z_v = h^K_v
 $$
@@ -390,17 +422,20 @@ $$
 
 
 
-unsupervised loss로는 cosine similarity function을 사용합니다.
+**unsupervised loss**로는 **cosine similarity function**을 사용합니다.
 $$
-J_G(z_v) = -log(\sigma(z_v^T z_u)) - Q \cdot \mathbb{E}_{u_n \sim P_n(v) log (\sigma (-z^T_v z_{u_n}))}
+J_G(z_v) = -log(\sigma(z_v^T z_u)) - Q \cdot \mathbb{E}_{u_n \sim P_n(v)}log (\sigma (-z^T_v z_{u_n}))
 $$
 
 
-반면, Supervised loss로는 CrossEntropy를 사용합니다.(node classification 에 사용됩니다.)
+반면, **Supervised loss**로는 **CrossEntropy**를 사용합니다.(node classification 에 사용됩니다.)
 $$
 L = \sum_{v \in V} y_v log(\sigma (w^T z_v)) + (1-y_v)log(1-\sigma(w^Tz_v))
 $$
 
+
+
+<br>
 
 **Inductive learning으로서의 GNN**
 
@@ -411,6 +446,10 @@ $$
 * 반면, transductive learning은 일반적인 모델을 찾는 것이 아니라, 주어진 data들만을 잘 분류할 수 있는 최적의 알고리즘을 학습합니다. 따라서 새로운 data가 들어왔을 때 inference할 수 없다는 단점을 가지게 됩니다.
 
 파라미터와 함수를 공유할 수 있는 모델을 만들면 이 함수를 새로운 그래프에도 적용시킬 수 있게 됩니다.
+
+
+
+
 
 ---
 
@@ -431,7 +470,6 @@ $$
 h_v^k = \sigma (W_k \sum_{u \in N(v) \cup v} \frac{h_u^{k-1}}{\sqrt{\vert N(u) \vert \vert N(v) \vert}}) 
 $$
 
-
 ---
 
 ## 3) graphSAGE
@@ -442,7 +480,7 @@ $$
 
 
 
-$h_v^k$를 표현하기 위한 다양한 방법들이 있네요.
+$h_v^k$를 표현하기 위한 다양한 방법들이 있습니다.
 
 AGG는 용도에 따라 바뀔 수 있습니다.
 
@@ -458,7 +496,6 @@ $$
 $$
 AGG = LSTM(\{Qh_u^{k-1}, \forall u \in N(v)\})
 $$
-
 
 ---
 
@@ -511,7 +548,6 @@ $\alpha_{u, v}$는 각 이웃에 대한 attention(또는 weights)입니다.
 $$
 a_{v, u} = \frac{exp(LeakyReLU(\alpha^T [Qh_v, Qh_u]))}{\sum_{u' \in N(v) \cup v} exp(LeakyReLU(a^T [Qh_v, Qh_{u'}]))}
 $$
-
 
 
 

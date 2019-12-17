@@ -72,17 +72,19 @@ $$
 
 layer $l$ 의 그래프로부터 $X^{(l)}, A^{(l)}$를 구할 수 있습니다.
 
-각 노드 feature를 5개로 설정했을 때 input feature matrix $X^{(l)} \in \mathbb{R}^{4 \times 5}$ 를 구할 수 있습니다.
+각 노드 feature를 5개로 설정했을 때 **input feature matrix** $X^{(l)} \in \mathbb{R}^{4 \times 5}$ 를 구할 수 있습니다.
 
-또한 그래프의 인접행렬(adjacency matrix) $A^l \in \mathbb{R}^{4 \times 4}$도 구할 수 있습니다.
+또한 그래프의 인접행렬(**adjacency matrix**) $A^l \in \mathbb{R}^{4 \times 4}$도 구할 수 있습니다.
 
-$p \in \mathbb{R}^5$는 학습가능한 프로젝션 벡터이며, 행렬곱 연산 / p의 크기 을 통해 을 통해 y 가 됩니다. 
 
-k =2 이므로 높은 점수를 가진 두 노드를 선택한 후 인덱스를 기록합니다. 
 
-이 인덱스를 이용해 $\tilde{X}, \tilde{y}$를 얻고, 둘을 element-wise product하여 $X^{l+1}$를 얻어낼 수 있습니다.
+1) $p \in \mathbb{R}^5$는 학습가능한 프로젝션 벡터이며, 행렬곱 연산 / p의 크기 을 통해 을 통해 y 가 됩니다. 
 
-$A^{l+1}$은 단순히 $A^l$로부터 해당 인덱스를 가져온 행렬이 됩니다.
+2) k =2 이므로 높은 점수를 가진 두 노드를 선택한 후 인덱스를 기록합니다. 
+
+3, 4, 6) 이 인덱스를 이용해 $\tilde{X}, \tilde{y}$를 얻고, 둘을 element-wise product하여 $X^{l+1}$를 얻어낼 수 있습니다.
+
+5) $A^{l+1}$은 단순히 $A^l$로부터 해당 인덱스를 가져온 행렬이 됩니다.
 $$
 \begin{gather}
 y = X^l p^l / \Vert p^l\Vert \newline 
@@ -115,7 +117,7 @@ $$
 
 Visual relationships of an image as a graph(CVPR, 2018)
 
-predicate(술부) detection ↔ object detection
+**predicate(술부) detection ↔ object detection**
 
 
 
@@ -143,13 +145,13 @@ Goal : predict a graph of relationships (predicate and object) - Scene graph det
 
 **Module 1: Scene graph module (SG module)** 
 
-1) Faster-RCNN : feature of object bboxes(nodes) and intersecting bbox(edges).
+1) **Faster-RCNN** : feature of object bboxes(nodes) and intersecting bbox(edges).
 
-2) GRU : 노드와 엣지의 은닉상태(hidden state)
+2) **GRU** : 노드와 엣지의 은닉상태(hidden state)
 
-3) Message Pooling: weighted sum을 통한 edge-**node**-edge (node message) and node-**edge**-node (edge message)
+3) **Message Pooling**: weighted sum을 통한 edge-**node**-edge (node message) and node-**edge**-node (edge message)
 
-4) Exchange and repeat
+4) **Exchange and repeat**
 
 ![](https://i.ibb.co/YhV7nvK/image.png)
 
@@ -159,7 +161,7 @@ Goal : predict a graph of relationships (predicate and object) - Scene graph det
 
 **Module 2 : Relational module (ours, RL module)**
 
-1) Faster-RCNN : feature of object bboxes(nodes) and intersecting bbox(edges).
+1) **Faster-RCNN** : feature of object bboxes(nodes) and intersecting bbox(edges).
 
 2) **Tensor factorization** : 탐색된 레이블을 사용하여 술어를 탐색
 
@@ -169,10 +171,10 @@ Goal : predict a graph of relationships (predicate and object) - Scene graph det
 
 **Balancing the modules**
 
-- SG module 은 표현력이 있으나 주어진 훈련집합에 매우 의존적입니다. 
-- RL module은 Robust하나 tensor construnction에 의해 object를 추론(예측)하지 못합니다.
+- **SG module 은 표현력이 있으나 주어진 훈련집합에 매우 의존적입니다.** 
+- **RL module은 Robust하나 tensor construnction에 의해 object를 추론(예측)하지 못합니다.**
 
-따라서 RL 모듈로부터 globally robust한 술부 분포를 얻어 SG 모듈의 술부 분포를 규제(Regularize)할 수 있습니다. 
+따라서 RL 모듈로부터 globally robust한 술부 분포를 얻어 **SG 모듈의 술부 분포를 규제**(Regularize)할 수 있습니다. 
 
 ![](https://i.ibb.co/MCW45jJ/image.png)
 
@@ -232,7 +234,9 @@ GNN에 관한 이전 작업은 도메인 전문가에 의해 손수 선택되는
 
 ![](https://i.ibb.co/61ksV4F/image.png)
 
-GTL은 인정행렬 집합으로부터 부드럽게(softmax이용) 인접행렬(edge types)을 고르고, 선택된 두 인접행렬의 행렬 곱을 통해 새로운 meta-path graph를 생성합니다.
+GTL은 인접행렬 집합으로부터 부드럽게(softmax이용) 인접행렬(edge types)을 고르고, 
+
+선택된 두 인접행렬의 행렬 곱을 통해 새로운 meta-path graph를 생성합니다.
 
 
 
@@ -258,9 +262,9 @@ GTNs은 GTL을 사용하여 새로운 meta-path 인접행렬 셋을 생성하는
 
 **Q2) GTN은 데이터셋에 의존하는 meta-path의 가변길이를 적응적으로 생산할 수 있는가?**
 
+아래 그림은 각 GTL에서 인접행렬(edge type)의 어텐션 score입니다. 
 
-
-아래 그림은 각 GTL에서 인접행렬(edge type)의 어텐션 scroe입니다. (a)는 DBLP, (b)는 IMDB 데이터셋.
+(a)는 DBLP, (b)는 IMDB 데이터셋.
 
 ![](https://i.ibb.co/HKSzncG/image.png)
 
