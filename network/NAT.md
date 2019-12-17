@@ -14,7 +14,7 @@ IP packet이 라우터나 방화벽을 통과할 때 그들의 source와 dst 주
 
 1) IP 주소의 부족을 극복할 수 있습니다.
 
-	* **Public IP Address Sharing**: 많은 host가 적은 public IP 주소를 공유할 수 있습니다. 돈과 IP 주소 공간을 절약할 수 있습니다.
+**Public IP Address Sharing**: 많은 host가 적은 public IP 주소를 공유할 수 있습니다. 돈과 IP 주소 공간을 절약할 수 있습니다.
 
 2) 확장이 용이합니다. 
 
