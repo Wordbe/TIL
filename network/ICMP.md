@@ -1,5 +1,7 @@
 # ICMP
 
+Internet Control Message Protocol
+
 
 
 ## ICMPv4
@@ -114,15 +116,17 @@ checksum : ICMP type과 시작하는 ICMP 메시지의 1의 보수 합의 16bit 
 
 ### 2. ICMP Query Messages
 
+
+
+#### Echo
+
 * Echo 또는 Echo reply message입니다. (오진단을 위해 reachability 체크)
 * Echo reply는 echo request를 받은 host나 router로부터 보내집니다.
 * reachability를 `ping` 명령어를 수행하여 검증합니다.
 
 
 
----
-
-### 3. ICMPv4 Router Discovery Messages
+#### ICMPv4 Router Discovery Messages
 
 ICMP의 확장입니다. 이웃 라우터를의 IP주소를 찾기위해 host가 multicast나 broadcast 네트워크에 attach될 수 있게 합니다.
 
@@ -147,13 +151,13 @@ ICMP의 확장입니다. 이웃 라우터를의 IP주소를 찾기위해 host가
 
 
 
-### ICMPv4 Time Stamp
+#### ICMPv4 Time Stamp
 
 : 두 시스템의 clock 동기화를 위해 사용됩니다.
 
 
 
-### ICMPv4 Address mask
+#### ICMPv4 Address mask
 
 : host와 router는 서브넷 마스크에게 부트시 거주할 네트워크를 요청할 수 있습니다.
 
