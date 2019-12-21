@@ -437,3 +437,5 @@ Bash는 공백에 매우 민감합니다. 디버깅시 잘 체크해 보시기 �
 **Reference**
 
 개발자스럽다님 블로그: https://blog.gaerae.com/2015/01/bash-hello-world.html
+
+https://mug896.github.io/bash-shell/sh.html
