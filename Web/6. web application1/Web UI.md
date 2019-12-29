@@ -82,3 +82,93 @@ DOM Tree를 구성 후 event를 확인한 후에 자바스크립트를 작업하
 
 
 
+test.js
+
+```javascript
+window.addEventListener("DOMContentLoaded", ()=> {
+  console.log("window Loaded.");
+});
+
+document.addEventListener("DOMContentLoaded", ()=> {
+  console.log("DOM Loaded.");
+});
+```
+
+
+
+위 코드를 실행시키고, 콘솔창을 보면 DOM이 window 보다 먼저 load된 것을 알 수 있습니다.
+
+
+
+js 코드를 DOMContentLoaded 후 실행하도록 하려면 보통 아래와 같이 코드를 구성합니다.
+
+```javascript
+function init(){
+  var base = document.querySelector(".outside");
+  base.style.transform = "scale(4)";
+  base.style.left = "300px";
+
+  var target = document.querySelector(".outside");
+  var btn = document.querySelector("button");
+  btn.addEventListener("click", ()=>{
+    var prev = parseInt(target.style.left);
+    target.style.left = prev + 100 + "px";
+  });
+}
+
+
+
+document.addEventListener("DOMContentLoaded", ()=> {
+  console.log("DOM Loaded.");
+  init();
+});
+```
+
+
+
+load 이후에 작업을 하는 것들은 실제로 많이 사용하지 않습니다.
+
+예를 들어 이미지 크기에 맞게 엘리먼트 크기들이 조정되어야 한다면 로드가 끝난 후 스크립트가 실행되어야 합니다.
+
+
+
+
+
+---
+
+# 3. Event Delegation
+
+list(목록)가 여러 개인 UI에 각각 비슷한 이벤트를 걸어서 처리하는 방법을 알아봅니다.
+
+* Event Delegation
+* Bulbbling
+* Capturing
+
+
+
+**1) 이벤트 등록**
+
+가로로 배치된 책 리스트, 각각 리스트에 클릭을 할 때 이벤트 발생 → addEventListener를 사용해서 이벤트 등록
+
+
+
+브라우저는 4개의 이벤트리스너를 기억하고 있는데,
+
+list 요소가 많다면 비효율적이게 됩니다.
+
+또한 list한 개가 동적으로 추가되면, 엘리먼트에 addEventListener를 해주어야 합니다.
+
+
+
+target 정보를 이용해 해결해봆디ㅏ.
+
+
+
+
+
+---
+
+**Reference**
+
+https://www.edwith.org/boostcourse-web/lecture/16760/
+
