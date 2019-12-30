@@ -152,6 +152,19 @@ list(목록)가 여러 개인 UI에 각각 비슷한 이벤트를 걸어서 처�
 
 
 
+```javascript
+var log = document.querySelector(".log");
+var lists = document.querySelectorAll("ul > li");
+
+for (var i=0, len=lists.length; i < len; ++i){
+  lists[i].addEventListener("click", function(evt){
+    log.innerHTML = "IMG URL is " + evt.currentTarget.firstElementChild.src;
+  });
+}
+```
+
+
+
 브라우저는 4개의 이벤트리스너를 기억하고 있는데,
 
 list 요소가 많다면 비효율적이게 됩니다.
@@ -160,7 +173,128 @@ list 요소가 많다면 비효율적이게 됩니다.
 
 
 
-target 정보를 이용해 해결해봆디ㅏ.
+target 정보를 이용해 해결해봅시다.
+
+```javascript
+var ul = document.querySelector("ul");
+
+ul.addEventListener("click", (evt)=> {
+  // IMG, UL
+  console.log(evt.target.tagName, evt.currentTarget.tagName);
+})
+```
+
+
+
+ul > li > img 로 구성되어있는 html에서
+
+img태그를 클릭했다면 UL에 등록한 이벤트 리스너도 실행이 됩니다.
+
+즉 클릭한 지점이 하위 엘리먼트여도 그것을 감싸는 상위 엘리먼트까지 올라가면서 이벤트리스너가 있는지 찾아냅니다. 이를 **이벤트 버블링(Event Bubbling)**이라고 합니다.
+
+
+
+![](https://i.ibb.co/9WJyYLT/image.png)
+
+
+
+1 ul > 2 li > 3 img에서 각 엘리먼트에 모두 이벤트가 등록되어있다고 가정합시다.
+
+하위엘리먼트인 3번부터 이벤트가 발생하고, 2, 1 순으로 이벤트가 발생하는 것이 **Bubbling**입니다.
+
+반대로, 작동하는 것은 **Caputring**이라고 하며, addEventListener 메서드 3번째 인자를 true로 설정하면 됩니다.
+
+
+
+```javascript
+var ul = document.querySelector("ul");
+
+ul.addEventListener("click", (evt)=> {
+  var target = evt.target;
+  // 이미지를 누르면 이미지 URL 출력
+  if (target.tagName === "IMG"){
+    log.innerHTML = "IMG URL은, " + target.src;
+  }
+  // 이미지가 아닌 border(li) 눌러도 이미지 URL 출력이 되게 함
+  else if (target.tagName === "LI"){
+    log.innerHTML = "IMG URL은, " + target.firstElementChild.src;
+  }
+})
+```
+
+
+
+위 코드는 자식노드 모두에게 이벤트를 등록하지 않고, 상위엘리먼트에 이벤트를 등록을 해서
+
+효율적이게 표현하는 방법입니다.
+
+이처럼 .target을 이용하는 방법은 매우 좋습니다.
+
+이를 **event delegation(이벤트 대표위임)** 이라고 합니다.
+
+
+
+실습을 위한 추가 소스코드
+
+index.html
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+</head>
+
+<body>
+  <ul>
+    <li>
+      <img src="goodTestPairs/Real_blur(clean).png" class="product-image">  </li>
+    <li>
+      <img src="goodTestPairs/Real_crumpled_shade(clean).png" class="product-image"> </li>
+    <li>
+      <img src="goodTestPairs/Real_shade(clean).png" class="product-image"> </li>
+    <li>
+      <img src="goodTestPairs/Real_shade.png" class="product-image"> </li>
+  </ul>
+
+  <section class="log"></section>
+  <script src="animation.js"></script>
+</body>
+</html>
+```
+
+
+
+style.css
+
+```css
+.product-image {
+  width: 150px;
+  height: 150px;
+}
+
+ul > li {
+  /* width: 170px;
+  height: 100px;
+  float: left; */
+  display: inline-block;
+  padding: 10px;
+  border: 1px solid gray;
+  background-color: rgb(253, 253, 100);
+}
+```
+
+
+
+
+
+# 4. HTML Templating
+
+
 
 
 
