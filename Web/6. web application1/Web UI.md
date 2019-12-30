@@ -292,7 +292,226 @@ ul > li {
 
 
 
+---
+
 # 4. HTML Templating
+
+서버로부터 받은 데이터를 화면에 반영해봅시다.
+
+HTML 형태는 그대로이면서 데이터만 변경되는 경우 처리하는 방법을 알아봅니다.
+
+
+
+
+
+## 1) HTML Templating 작업이란?
+
+JSON형태의 데이터를 Ajax로 받아와서 화면에 추가해봅시다.
+
+List 태그로 html을 구현해보면 사진, 가격, 이름, 별점, 추가정보를 비슷한 tag를 사용해서 표현하면 됩니다. 이 때 templating 개념을 도입하면 좋습니다.
+
+
+
+렌더링을 서버에서 할지 혹은 클라이언트에서 할 지 결정하는 것은 중요합니다.
+
+
+
+HTML Template 은 포맷입니다. 여기에서 설정한 변수는 JSON data에서 변수와 매치됩니다.
+
+
+
+![](https://i.ibb.co/mHJyHRk/image.png)
+
+
+
+즉, 문자열 조작이 중요하며,
+
+이 중 replace을 주로 이용해서 실습을 해보겠습니다.
+
+특히, 정규표현식 (regular expression)을 통해 강력한 문자열 파싱을 할 수 있습니다.
+
+
+
+```javascript
+var data = {
+  title: "hello",
+  content: "lorem dkfief",
+  price: 2000
+};
+
+var html = "<li><h4>{title}</h4><p>{content}</p><div>{price}</div></li>";
+
+var resultHTML = html.replace("{title}", data.title)
+                     .replace("{content", data.content)
+                     .replace("{price}", data.price);
+
+console.log(resultHTML);
+```
+
+
+
+데이터가 배열로 되있을 때 여러데이터를 한꺼번에 담아봅시다.
+
+```javascript
+var data = [
+  {
+    title: "flower",
+    content: "lorem dkfief flower",
+    price: 1000
+  },
+  {
+    title: "calendar",
+    content: "lorem dkfief cal",
+    price: 2000
+  },
+  {
+    title: "sweater",
+    content: "lorem dkfief swat",
+    price: 3000
+  }
+];
+
+var html = "<li><h4>{title}</h4><p>{content}</p><div>{price}</div></li>";
+
+var resultHTML = [];
+data.forEach( (v)=>{
+  resultHTML.push(html.replace("title", v.title)
+                      .replace("content", v.content)
+                      .replace("price", v.price)
+  )
+});
+
+console.log(resultHTML);
+```
+
+
+
+
+
+---
+
+# 5. HTML templating 실습
+
+
+
+## 1) HTML template 보관
+
+```javascript
+var html = "<li><h4>{title}</h4><p>{content}</p><div>{price}</div></li>";
+```
+
+위와 같은 html 문자열은 다른 곳에 보관해야 합니다. js 코드안에 이런 정적 데이터를 보관하는 것은 좋지 않기 때문입니다. 방법은 다음과 같습니다.
+
+1) 서버에서 file로 ajax를 요청하고 받아옵니다.
+
+2) HTML 코드안에 숨겨둡니다.
+
+​	숨겨야 할 데이터가 많다면 파일로 분리해서 ajax로 가져옵니다.
+
+
+
+## 2) Templating
+
+HTML 중 script태그는 javascript가 아니면, 이는 렌더링하지 않고 무시하게 됩니다. 이를 이용하면 됩니다.
+
+```html
+<script id="template-list-item" type="text/template">
+  <li>
+      <h4>{title}</h4><p>{content}</p><div>{price}</div>
+  </li>
+</script>
+```
+
+간단한 코드의 경우 html에 이와 같이 삽입해주면 됩니다.
+
+
+
+main.html
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+    .content > li{
+      border: 1px solid gray;
+      list-style: none;
+    }
+    </style>
+</head>
+
+<body>
+  <h2>template test example</h2>
+  <ul class="content"></ul>
+    
+  <script id="template-list-item" type="text/template">
+    <li>
+      <h4>{title}</h4><p>{content}</p><div>{price}</div>
+    </li>
+  </script>
+    
+  <script src="test.js"></script>
+</body>
+</html>
+```
+
+
+
+
+
+여기에 javascript 코드를 아래와 같이 작성해봅시다.
+
+test.js
+
+```javascript
+// mock data. 서버에서 가져온 데이터
+var data = [
+  {title : "hello",content : "lorem dkfief",price : 2000},
+  {title : "hello",content : "lorem dkfief",price : 2000}
+];
+
+// html의 script에서 가져온 html template
+var html = document.querySelector("#template-list-item").innerHTML;
+
+var res = "";
+for (var i=0; i<data.length; ++i){
+  res += html.replace("{title}", data[i].title)
+             .replace("{content}", data[i].content)
+             .replace("{price}", data[i].price);
+}
+
+document.querySelector(".content").innerHTML = res;
+```
+
+
+
+지금은 데이터 양이 적어서 임시로 js 파일에 데이터를 저장해놓았지만,
+
+용량이 크거나 따로 분리하고 싶은 경우는 다른 파일에 놓고 ajax를 통해 불러오면 됩니다.
+
+
+
+
+
+---
+
+>  Tip: ES6에는 template literal은 replace method없이 쉽게 템플릿 작업을 할 수 있습니다.
+
+```javascript
+// template literal 이용
+completeTemplate = (title, content, price) => {
+  return `
+  <li>
+    <h4>${title}</h4><p>${content}</p><div>${price}</div>
+  </li>
+  `
+}
+let resultHTML = "";
+data.forEach(elem => {
+  resultHTML += completeTemplate(elem.title, elem.content, elem.price);
+})
+document.querySelector(".content").innerHTML = resultHTML;
+```
 
 
 
@@ -306,3 +525,4 @@ ul > li {
 
 https://www.edwith.org/boostcourse-web/lecture/16760/
 
+https://www.edwith.org/boostcourse-web/lecture/20732/
