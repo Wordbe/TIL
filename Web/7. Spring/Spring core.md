@@ -655,7 +655,65 @@ Car car = (Car) ac.getBean(Car.class);
 
 
 
+@ComponentScan 은 해당 클래스가 있으면 자동으로 어노테이션하게 도와줍니다.
 
+뒤에는 반드시 해당 패키지 이름을 적습니다.
+
+컨트롤러, 서비스, 레퍼지토리 등에서 어노테이션 붙여있는 bean을 모두 검색합니다.
+
+
+
+@Autowired을 클래스 선언부 위에 적어주면,
+
+set 메소드를 적을 필요가 없어집니다.
+
+
+
+ApplicationConfig2.java
+
+```java
+package kr.or.connect.diexam01;
+
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+@ComponentScan("kr.or.connect.diexam01")
+public class ApplicationConfig2 {
+
+}
+```
+
+
+
+그리고 Car와 Engine 클래스 위에 @Component 어노테이션을 붙여야 합니다.
+
+
+
+ApplicationContextExam04.java
+
+```java
+package kr.or.connect.diexam01;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+public class ApplicationContextExam04 {
+	public static void main(String[] args) {
+		ApplicationContext ac = new AnnotationConfigApplicationContext(ApplicationConfig2.class);
+		
+		Car car = (Car) ac.getBean(Car.class);
+		car.run();
+	}
+}
+```
+
+실행결과 :
+
+> Engine 생성자
+> Car 생성자
+> 엔진을 이용하여 달립니다.
+> 엔진이 동작합니다.
 
 
 
