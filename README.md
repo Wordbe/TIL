@@ -4,13 +4,39 @@
 
 My repostitory :smile:
 
-I'm Interested in
+
+
+
+
+
+
+
+
+아래와 같은 분야에 관심이 있어 공부를 하고 있습니다.
 
 ### 1. ML/DL
 
-### 2. FE/BE
+* supervised - 특히 **deep learning**
 
-### 3. Algorithm/Data structure
+  Vision, NLP
 
-### 4. Programming Language
+* unsupervised, semi-supervised
+
+* reinforcement
+
+
+
+### 2. BE
+
+* Web server
+* Java (Spring)
+
+### 3. FE
+
+* Web application
+* JavaScript
+
+
+
+### 4. 그 외 Algorithm/Data structure
 
