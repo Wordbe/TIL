@@ -1,4 +1,4 @@
-# [Pytorch] 1. 파이토치를 써야하는 이유 & 텐서란
+# [Pytorch] 파이토치를 써야하는 이유 & 텐서란
 
 이 글은 Deep Learning with pytorch를 번역, 편집한 글 입니다.
 
