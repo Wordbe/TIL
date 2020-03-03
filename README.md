@@ -29,12 +29,13 @@ My repostitory :smile:
 ### 2. BE
 
 * Web server
-* Java (Spring)
+* Java (Spring, Spring boot)
 
 ### 3. FE
 
 * Web application
 * JavaScript
+* React
 
 
 
