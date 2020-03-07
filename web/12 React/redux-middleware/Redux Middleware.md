@@ -32,6 +32,190 @@ redux-thunk, redux-saga 이 두 라이브러리가 가장 많이 사용됩니다
 
 
 
+```
+$ npx create-react-app learn-redux-middleware
+$ cd learn-redux-middleware
+$ yarn add redux react-redux
+```
+
+
+
+카운터 예제를 생성합니다.
+
+
+
+### 리덕스 모듈 준비
+
+액션 타입, 액션 생성함수, 리듀서를 한 파일에 작성하는 Ducks 패턴을 사용하도록 합니다.
+
+원래 Ducks 패턴을 따르는 리덕스 모듈에서는 액션 이름에 `couter/INCREASE` 접두어를 두지만, 지금은 액션이름이 중복되는 일이 없으니 편의상 생략하도록 합니다.
+
+
+
+**modules/counter.js**
+
+```javascript
+// 액션 타입
+const INCREASE = 'INCREASE';
+const DECREASE = 'DECREASE';
+
+// 액션 생성 함수
+export const increase = () => ({ type: INCREASE });
+export const decrease = () => ({ type: DECREASE });
+
+// 초깃값 (상태가 객체가 아니라 그냥 숫자여도 상관 없습니다.)
+const initialState = 0;
+
+export default function counter(state = initialState, action) {
+  switch (action.type) {
+    case INCREASE:
+      return state + 1;
+    case DECREASE:
+      return state - 1;
+    default:
+      return state;
+  }
+}
+```
+
+
+
+루트 리듀서를 생성합니다.
+
+**modules/index.js**
+
+```javascript
+import { combineReducers } from 'redux';
+import counter from './counter';
+
+const rootReducer = combineReducers({ counter });
+
+export default rootReducer;
+```
+
+
+
+### 프로젝트에 리덕스 적용
+
+루트 리듀서를 불러온 후 새로운 스토어를 만들고 Provider로 프로젝트에 적용합니다.
+
+
+
+**src/index.js**
+
+```javascript
+import React from 'react';
+import ReactDOM from 'react-dom';
+import './index.css';
+import App from './App';
+import * as serviceWorker from './serviceWorker';
+import { createStore } from 'redux';
+import { Provider } from 'react-redux';
+import rootReducer from './modules';
+
+const store = createStore(rootReducer);
+
+ReactDOM.render(
+  <Provider store={store}>
+    <App />
+  </Provider>,
+  document.getElementById('root')
+);
+
+// If you want your app to work offline and load faster, you can change
+// unregister() to register() below. Note this comes with some pitfalls.
+// Learn more about service workers: https://bit.ly/CRA-PWA
+serviceWorker.unregister();
+```
+
+
+
+### Presentational Component 준비
+
+**components/Counter.js**
+
+```javascript
+import React from 'react';
+
+function Counter({ number, onIncrease, onDecrease }) {
+  return (
+    <div>
+      <h1>{number}</h1>
+      <button onClick={onIncrease}>+1</button>
+      <button onClick={onDecrease}>-1</button>
+    </div>
+  );
+}
+
+export default Counter;
+```
+
+
+
+### Container 만들기
+
+**containers/CouterContainer.js**
+
+```javascript
+import React from 'react';
+import Counter from '../components/Counter';
+import { useSelector, useDispatch } from 'react-redux';
+import { increase, decrease } from '../modules/counter';
+
+function CounterContainer() {
+  const number = useSelector(state => state.counter);
+  const dispatch = useDispatch();
+
+  const onIncrease = () => {
+    dispatch(increase());
+  };
+  const onDecrease = () => {
+    dispatch(decrease());
+  };
+
+  return (
+    <Counter number={number} onIncrease={onIncrease} onDecrease={onDecrease} />
+  );
+}
+
+export default CounterContainer;
+```
+
+
+
+이제 App에서 CounterContainer를 렌더링 하고, 개발 서버를 구동합니다.
+
+```
+$ yarn start
+```
+
+
+
+
+
+**App.js**
+
+```javascript
+import React from 'react';
+import CounterContainer from './containers/CounterContainer';
+
+function App() {
+  return <CounterContainer />;
+}
+
+export default App;
+```
+
+
+
+
+
+
+
+---
+
+## 2 미들웨어 생성, 이해
+
 
 
 
@@ -45,3 +229,5 @@ redux-thunk, redux-saga 이 두 라이브러리가 가장 많이 사용됩니다
 https://react.vlpt.us/redux-middleware/
 
 https://react.vlpt.us/redux-middleware/01-prepare.html
+
+https://react.vlpt.us/redux-middleware/02-make-middleware.html
