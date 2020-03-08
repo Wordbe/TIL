@@ -216,7 +216,135 @@ export default App;
 
 ## 2 미들웨어 생성, 이해
 
+리덕스 미들웨어를 만들 때 [템플릿](https://redux.js.org/advanced/middleware#the-final-approach) 을 참조합니다.
 
+미들웨어는 결국 하나의 함수입니다. 함수를 연달아서 두번 리턴합니다. 
+
+
+
+```javascript
+const middleware = store => next => action => {
+  // 하고 싶은 작업...
+}
+```
+
+
+
+다음과 의미가 같습니다.
+
+```javascript
+function middleware(store) {
+  return function (next) {
+    return function (action) {
+      // 하고 싶은 작업...
+    };
+  };
+};
+```
+
+
+
+* _store_는 리덕스 스토어 인스턴스입니다. dispatch, getState, subscribe 내장함수가 들어있습니다.
+
+* _next_는 액션을 다음 미들웨어에게 전달하는 함수입니다. next(action) 형태로 사용합니다. 다음 미들웨어가 없다면 리듀서에게 액션을 전달해줍니다. next를 호출하지 않으면 액션이 무시처리되어 리듀서에게 전달되지 않습니다.
+
+* _action_은 현재 처리하고 있는 액션 겍체입니다.
+
+
+
+![](https://i.imgur.com/fZs5yvY.png)
+
+그림 출처: https://i.imgur.com/fZs5yvY.png (미들웨어의 구조)
+
+
+
+리덕스 스토어에는 여러 미들웨어를 등록할 수 있습니다. 새로운 액션이 dispatch 되면 첫번째로 등록한 미들웨어가 호출됩니다. 그 미들웨어에서 next(action)을 호출하면 다음 미들웨어로 액션이 넘어가고, store.dispatch 를 사용하면 다른 액션을 추가로 발생시킬 수 있습니다.
+
+
+
+---
+
+### 미들웨어 작성
+
+**middlewares/myLogger.js**
+
+```javascript
+const myLogger = store => next => action => {
+  console.log(action); // 먼저 액션을 출력합니다.
+  const result = next(action); // 다음 미들웨어 (또는 리듀서) 에게 액션을 전달합니다.
+  return result; // 여기서 반환하는 값은 dispatch(action)의 결과물이 됩니다. 기본: undefined
+};
+
+export default myLogger;
+```
+
+
+
+### 미들웨어 적용
+
+applyMiddleware 를 사용해서 스토어에 미들웨어를 적용합니다.
+
+**index.js**
+
+```javascript
+import React from 'react';
+import ReactDOM from 'react-dom';
+import './index.css';
+import App from './App';
+import * as serviceWorker from './serviceWorker';
+import { createStore, applyMiddleware } from 'redux';
+import { Provider } from 'react-redux';
+import rootReducer from './modules';
+import myLogger from './middlewares/myLogger';
+
+const store = createStore(rootReducer, applyMiddleware(myLogger));
+
+ReactDOM.render(
+  <Provider store={store}>
+    <App />
+  </Provider>,
+  document.getElementById('root')
+);
+
+serviceWorker.unregister();
+```
+
+
+
+### 미들웨어 수정
+
+액션이 리듀서까지 전달되고 난 후의 새로운 상태를 확인하고 싶으면 다음과 같이 수정합니다.
+
+```javascript
+const myLogger = store => next => action => {
+  console.log(action); // 먼저 액션을 출력합니다.
+  const result = next(action); // 다음 미들웨어 (또는 리듀서) 에게 액션을 전달합니다.
+
+  // 업데이트 이후의 상태를 조회합니다.
+  console.log('\t', store.getState()); // '\t' 는 탭 문자 입니다.
+
+  return result; // 여기서 반환하는 값은 dispatch(action)의 결과물이 됩니다. 기본: undefined
+};
+
+export default myLogger;
+```
+
+
+
+미들웨어 안에서 다양한 것을 할 수 있습니다. 예를 들어 액션 값을 객체가 아닌 함수를 받아오게 만들어서 액션이 함수타입이면 실행하도록 할 수도 있습니다. (redux-thunk 기능)
+
+
+
+```javascript
+const thunk = store => next => action =>
+  typeof action === 'function'
+    ? action(store.dispatch, store.getState)
+    : next(action)
+```
+
+
+
+리덕스 관련 값들은 콘솔에 로깅하는 것 보다는 [redux-logger](https://github.com/LogRocket/redux-logger) 미들웨어를 사용하는 것이 좋습니다.
 
 
 
