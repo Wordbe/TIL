@@ -8,10 +8,6 @@ My repostitory :smile:
 
 
 
-
-
-
-
 아래와 같은 분야에 관심이 있어 공부를 하고 있습니다.
 
 ### 1. ML/DL
@@ -31,6 +27,8 @@ My repostitory :smile:
 * Web server
 * Java (Spring, Spring boot)
 
+
+
 ### 3. FE
 
 * Web application
@@ -39,5 +37,10 @@ My repostitory :smile:
 
 
 
-### 4. 그 외 Algorithm/Data structure
+### 4. Data
+
+* Hadoop, Hive
+* Spark
+
+
 
