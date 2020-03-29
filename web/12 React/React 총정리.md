@@ -20,4 +20,35 @@
    13. 배열 항목 추가하기
    14. 배열 항목 제거하기
    15. 배열 항목 수정하기
+   16. useEffect
+       * 마운트, 언마운트, 업데이트 시 할 작업 설정
 
+
+
+
+
+리액트 구조의 핵심은
+
+**Flux Architecture**
+
+데이터는 위에서 아래로, 바뀐 상태도 위에서 아래로
+
+View → Action → Dispatcher → Store → View
+
+ 
+
+**Sytled-Component**
+
+```shell
+npm install -S styled-components
+npm install --save-dev @types/styled-components
+npm install --save-dev babel-plugin-styled-components
+```
+
+
+
+react
+
+
+
+naver d2 flex
