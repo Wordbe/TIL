@@ -1,4 +1,4 @@
-# Scala 04 - Class
+# Scala 04 - Class 1
 
 클래스는 `class`를 이용하여 생성할 수 있습니다. 클래스를 선언할 때는 멤버변수를 선언할 수 있습니다. 멤버 변수는 생략이 가능합니다.
 
@@ -101,11 +101,15 @@ class Person(name:String, age:Int) {
 }
 ```
 
-## 메소드 오버라이드(override)
+<bt>
+
+
+
+### 메소드 오버라이드(override)
 
 `override` 선언자를 이용하여 메소드를 오버라이드 할 수 있습니다. `new`를 이용하여 클래스 생성시에 오버라이드하여 메소드를 재정의 할 수 있습니다.
 
-```
+```scala
 class Person(name:String, age:Int, val job:String) {
     def greeting() = println(s"${name}님은 ${age}살 입니다.")
     def work() = println(s"직업은 ${job}입니다. ")
@@ -134,11 +138,13 @@ scala> p.work
 job is 학생. 
 ```
 
-# 생성자
+<br>
 
-스칼라는 따로 생성자가 존재하지 않습니다. 클래스 바디부분에 있는 코드가 바로 실행되기 때문에 이 부분에 처리 로직을 넣어주면 됩니다.
+### 생성자
 
-```
+**스칼라는 따로 생성자가 존재하지 않습니다.** 클래스 바디부분에 있는 코드가 바로 실행되기 때문에 이 부분에 처리 로직을 넣어주면 됩니다.
+
+```scala
 class Person(name:String, age:Int) {
     def greeting() = println(s"${name}님은 ${age}살 입니다.")
     println("초기화 완료")
@@ -149,13 +155,15 @@ scala> val p = new Person("David", 15)
 p: Person = Person@522c2a19
 ```
 
-# 상속과 추상 클래스
+<br>
 
-상속은 `extends`를 이용합니다. 일반 클래스와 추상클래스 모두 상속할 수 있습니다.
+### 상속과 추상 클래스
 
-추상클래스는 `abstract`를 이용합니다. 추상클래스는 매개변수를 가질 수 있습니다. 메소드를 선언만 하고 구현은 자식 클래스에 맡길 수 도 있고 기본 메소드를 구현할 수도 있습니다.
+**상속은 `extends`를 이용합니다.** 일반 클래스와 추상클래스 모두 상속할 수 있습니다.
 
-```
+**추상클래스는 `abstract`를 이용합니다.** 추상클래스는 매개변수를 가질 수 있습니다. **메소드를 선언만 하고 구현은 자식 클래스에 맡길 수 도 있고 기본 메소드를 구현할 수도 있습니다.**
+
+```scala
 // 추상클래스 선언 
 abstract class Person(name: String, age: Int) {
   def work
@@ -177,15 +185,15 @@ scala> p.status("깨있는")
 깨있는 상태 입니다.
 ```
 
+<br>
 
+### **봉인 클래스(Sealed class)**
 
-# 봉인 클래스(Sealed class)
-
-스칼라는 봉인 클래스를 지원합니다. 봉인 클래스는 하위 타입이 모두 한파일에 있어야 합니다. 관련 클래스를 한파일에 모두 입력하게 강제할 수 있기 때문에 관리의 효율성이 높아집니다. 봉인 클래스는 `sealed`를 이용하고 트레잇도 봉인할 수 있습니다.
+스칼라는 봉인 클래스를 지원합니다. **봉인 클래스는 하위 타입이 모두 한파일에 있어야 합니다.** **관련 클래스를 한파일에 모두 입력하게 강제할 수 있기 때문에 관리의 효율성이 높아집니다.** 봉인 클래스는 `sealed`를 이용하고 트레잇도 봉인할 수 있습니다.
 
 다음과 같이 `file1.scala`에 다음과 같이 봉인 추상클래스 `Furniture`를 생성하고, `file2.scala`에서 `Desk` 클래스를 선언하면 "illegal inheritance from sealed class Furniture" 오류가 발생합니다.
 
-```
+```scala
 // file1.scala
 sealed abstract class Furniture
 case class Couch() extends Furniture
@@ -195,3 +203,99 @@ case class Chair() extends Furniture
 case class Desk() extends Furniture
   -> illegal inheritance from sealed class Furniture
 ```
+
+<br>
+
+<br>
+
+# 1. 케이스 클래스(case class)
+
+스칼라에는 케이스 클래스라는 특수 클래스가 존재합니다. `case`를 이용하여 선언합니다. **일반 클래스와 달리 인스턴스를 생성할 때 `new`를 사용하지 않습니다.**
+
+```scala
+// 케이스 클래스 Person 선언 
+case class Person(name:String, age:Int)
+
+var p = Person("철수", 15)
+```
+
+<br>
+
+### 불변 데이터
+
+케이스 클래스는 불변 데이터 입니다. 케이스 클래스의 멤버변수는 기본적으로 불변 변수로 선언됩니다.
+
+```scala
+case class Person(name:String, age:Int)
+
+var p = Person("A", 10)
+
+scala> p.name
+res6: String = A
+
+// 케이스 클래스의 데이터는 불변 변수로 자동 선언 
+scala> p.name = "B"
+<console>:27: error: reassignment to val
+       p.name = "B"
+              ^
+```
+
+<br>
+
+### 패턴 매칭
+
+스칼라의 패턴매칭은 자바의 `case`문과 유사하지만 더 강력한 기능을 제공합니다.
+
+
+
+### 1) 데이터 비교
+
+**케이스 클래스의 비교는 참조값을 이용하지 않고, 클래스의 멤버변수의 데이터를 이용하여 처리합니다.**
+
+```scala
+var p1 = Person("A", 10)
+var p2 = Person("A", 10)
+var p3 = Person("B", 10)
+
+scala> p1 == p2
+res7: Boolean = true
+
+scala> p2 == p3
+res8: Boolean = false
+```
+
+<br>
+
+### 2) 초기화가 간단
+
+케이스 클래스는 `new`를 이용하지 않고 초기화 할 수 있습니다. 키워드를 이용하지 않기 때문에 문법적으로 더 간단하고 효율적으로 표현됩니다.
+
+```scala
+var p = Person("A", 10)
+```
+
+<br>
+
+### 3) 자동 코드 생성
+
+케이스 클래스는 컴파일러가 `toString`, `hashCode`, `equals`를 자동으로 생성해 줍니다. 컴파일러가 불변 객체를 지원하기 위해서, 새로운 복제 객체를 리턴하는 `copy()` 메서드를 자동으로 생성해 줍니다.
+
+```scala
+var p = Person("A", 10)
+
+scala> p.toString
+res9: String = Person(A,10)
+
+scala> p.hashCode
+res10: Int = 649684425
+```
+
+
+
+---
+
+**Reference**
+
+https://wikidocs.net/26142
+
+https://wikidocs.net/29773
