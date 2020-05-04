@@ -8,7 +8,7 @@ My repostitory :smile:
 
 
 
-아래와 같은 분야에 관심이 있어 공부를 하고 있습니다.
+아래와 같은 분야에 관심이 있어 공부하고 있습니다.
 
 ### 1. ML/DL
 
@@ -25,15 +25,15 @@ My repostitory :smile:
 ### 2. BE
 
 * Web server
-* Java (Spring, Spring boot)
+* Spring, Spring boot, JPA
 
 
 
 ### 3. FE
 
-* Web application
-* JavaScript
+* JavaScript / TypeScript
 * React
+* React Native
 
 
 
