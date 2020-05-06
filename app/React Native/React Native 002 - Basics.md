@@ -230,4 +230,127 @@
   />
   ```
 
-  
+<br>
+
+---
+
+## 컴포넌트 분리하기
+
+`App.js`에 몰려있던 내용들을 유지/보수 및 가독성을 위해 `components/GoalInput.js` , `components/GoalItem.js` 에 분산시켜 봅시다.
+
+**App.js**
+
+```react
+import React, { useState } from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  Button,
+  ScrollView,
+  FlatList
+} from 'react-native';
+import GoalItem from './components/GoalItem';
+import GoalInput from './components/GoalInput';
+
+export default function App() {
+  const [courseGoals, setCourseGoals] = useState([]);
+  const addGoalHandler = (goalTitle) => {
+    setCourseGoals((currentGoals) => [
+      ...currentGoals,
+      { id: Math.random().toString(), value: goalTitle }
+    ]);
+  };
+
+  return (
+    <View style={styles.container}>
+      <Text>Wordbe's App</Text>
+
+      <GoalInput onAddGoal={addGoalHandler} />
+          
+      <FlatList
+        keyExtractor={(item, index) => item.id}
+        data={courseGoals}
+        renderItem={(itemData) => {
+          return <GoalItem title={itemData.item.value} />;
+        }}
+      />
+    </View>
+  );
+}
+```
+
+**components/GoalInput.js**
+
+```react
+import React, { useState } from 'react';
+import { View, TextInput, Button, StyleSheet } from 'react-native';
+
+function GoalInput(props) {
+  const [enteredGoal, setEnteredGoal] = useState('');
+  const goalInputHandler = (enteredText) => {
+    setEnteredGoal(enteredText);
+  };
+
+  return (
+    <View style={styles.innerView}>
+      <TextInput
+        placeholder="Course Goal"
+        style={styles.textInputStyle}
+        onChangeText={goalInputHandler}
+        value={enteredGoal}
+      />
+      <Button title="Add" onPress={props.onAddGoal.bind(this, enteredGoal)} />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  textInputStyle: {
+    marginRight: 5,
+    borderColor: 'black',
+    borderWidth: 1
+  },
+  innerView: {
+    flexDirection: 'row',
+    padding: 30
+  }
+});
+
+export default GoalInput;
+```
+
+* App.js 에서 보면 `GoalInput` 컴포넌트의 props 로 `addGoalHandler`  함수를 전달해주었습니다.
+* GoalInput.js 에서는 받아온 함수를 Button의 인자로 사용하고 있습니다. `addGoalHandler` 함수는 props.onAddGoal로 받아와지는데, 이 함수는 이전 객체 currentGoals와 enteredGoal이라는 인수가 필요합니다.
+* 이 때, bind 함수에 this 인자를 넣어서 업데이트 사항이 반영된 객체가 계속 올 수 있도록  반영합니다.
+
+
+
+**components/GoalItem.js**
+
+```react
+import React from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+
+function GoalItem(props) {
+  return (
+    <View style={styles.listItem}>
+      <Text>{props.title}</Text>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  listItem: {
+    pading: 10,
+    marginVertical: 3,
+    backgroundColor: '#ccc',
+    borderColor: 'black',
+    borderWidth: 1
+  }
+});
+
+export default GoalItem;
+```
+
