@@ -41,3 +41,62 @@ listContainer: {
 
 응용해서 350 픽셀 이상일 경우 60%, 미만일 경우 80%의 넓이를 적용시킬 수 있습니다.
 
+
+
+### 다이나믹하게 사이즈 변경
+
+예시
+
+```react
+imageContainer: {
+    width: Dimensions.get('window').width * 0.7,
+    height: Dimensions.get('window').width * 0.7,
+    borderRadius: (Dimensions.get('window').width * 0.7) / 2,
+    borderWidth: 3,
+    borderColor: 'black',
+    overflow: 'hidden',
+    marginVertical: Dimensions.get('window').height / 30
+  },
+```
+
+
+
+
+
+---
+
+## 가로 방향 전환
+
+**app.json**
+
+```json
+{
+  "expo": {
+    "name": "guess-a-number-app",
+    "slug": "guess-a-number-app",
+    "platforms": ["ios", "android", "web"],
+    "version": "1.0.0",
+    "orientation": "default",
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true
+    }
+  }
+}
+```
+
+`orientation` 에서 기본으로 portrait 이 정해져있습니다. 세로방향이 기본이고, 가로방향지원을 하지 않습니다.
+
+landscape라는 값으로 바꿀 수 도 있습니다. 게임할 때 필요한 가로방향 화면(landscape mode)을 지원합니다.
+
+위 코드처럼 default 로 설정해 놓으면 가로방향, 세로방향을 모두 지원합니다.
+
