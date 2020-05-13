@@ -70,5 +70,50 @@ $ npm install react-navigation
 $ expo install react-native-gesture-handler react-native-reanimated react-native-screens react-native-safe-area-context @react-native-community/masked-view
 ```
 
+추가적인 navigator도 설치해줍니다.
 
+```shell
+yarn add react-navigation-stack react-navigation-tabs react-navigation-drawer
+```
+
+
+
+## StackNavigator
+
+각각의 컴포넌트를 만든 후, StackNavigator로 이를 뭉쳐봅시다.
+
+```react
+import { createAppContainer } from 'react-navigation';
+import { createStackNavigator } from 'react-navigation-stack';
+
+import CategoriesScreen from '../screens/CategoriesScreen';
+import CategoryMealsScreen from '../screens/CategoryMealsScreen';
+import MealDetailScreen from '../screens/MealDetailScreen';
+
+const MealsNavigator = createStackNavigator({
+  Categories: CategoriesScreen,
+  CategoryMeals: {
+    screen: CategoryMealsScreen
+  },
+  MealDetail: MealDetailScreen
+});
+
+export default createAppContainer(MealsNavigator);
+```
+
+
+
+## Navigating
+
+```react
+<View style={styles.screen}>
+      <Text>The Categories Screen!</Text>
+      <Button
+        title="Go to Meals!"
+        onPress={() => {
+          props.navigation.navigate({ routeName: 'CategoryMeals' });
+        }}
+      />
+    </View>
+```
 
