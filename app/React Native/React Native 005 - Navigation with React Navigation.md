@@ -105,6 +105,8 @@ export default createAppContainer(MealsNavigator);
 
 ## Navigating
 
+navigation에서 버튼을 만들어서 다른 곳으로 이동하게 만드는 예제입니다.  navigate 메소드에 `routeName`에 네비게이터에 등록해 놓은 컴포넌트를 스트링으로 적어줍니다.
+
 ```react
 <View style={styles.screen}>
       <Text>The Categories Screen!</Text>
