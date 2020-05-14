@@ -119,3 +119,117 @@ navigation에서 버튼을 만들어서 다른 곳으로 이동하게 만드는 
     </View>
 ```
 
+
+
+## Push, Pop, Replace
+
+```react
+<Button
+    title="Go to Details"
+    onPress={() => {
+        props.navigation.navigate({
+            routeName: 'MealDetail'
+        });
+    }}
+/>
+```
+
+`StackNavigator`에서는 위의 코드와 같은 기능을 하도록 `props.navigation.push('Mealdetail')`을 사용할 수 있습니다.
+
+
+
+```react
+<Button title="Go Back" onPress={() => {
+    props.navigation.goBack();
+}} />
+```
+
+goBack() 을 통해서 이전화면으로 돌아갈 수 있습니다  위와 같은 기능을 하는 메소드로 `props.navigation.pop()` 이 있습니다. 하지만 이는 `StackNavigator `에서만 사용할 수 있습니다.
+
+
+
+```react
+<Button title="Go Back to Categories" onPress={() => {
+    props.navigation.popToTop();
+}} />
+```
+
+`popToTop()`을 통해 루트 컴포넌트로 이동이 가능합니다.
+
+
+
+`props.navigation.replace()`를 사용하면, 스택에 이전 화면이 쌓이지 않고 다른 화면으로 넘어갈 수 있습니다. 따라서 이전 화면으로 돌아가는 기능이 구현되지 않습니다.
+
+
+
+---
+
+## Grid 카테고리
+
+```react
+function renderGridItem(itemData) {
+  return (
+    <View style={styles.gridItem}>
+      <Text>{itemData.item.title}</Text>
+    </View>
+  );
+}
+
+function CategoriesScreen(props) {
+  return (
+    <FlatList
+      keyExtractor={(item, index) => item.id}
+      data={CATEGORIES}
+      renderItem={renderGridItem}
+      numColumns={2}
+    />
+  );
+}
+```
+
+스크롤이 가능한 컴포넌트를 만들되, 현재 보여지는 부분만 렌더링하여 효율성을 높이기 위해 `FlatList`를 이용합니다. 데이터는 미리 `CATEGORIES` 라는 객체 배열을 만들었으며, 객체의 키는 id, title, color가 있습니다.
+
+각 아이템을 어떻게 만들지 구성하는 `renderGridItem` 함수를 생성하여 FlatList의 인자로 넣어줍니다. `numColumns`로 칼럼 수를 정할 수 있습니다.
+
+
+
+## 네이게이션 옵션에서 Header 설정
+
+```react
+function CategoriesScreen(props) {
+  const renderGridItem = (itemData) => {
+    return (
+      <TouchableOpacity
+        style={styles.gridItem}
+        onPress={() => {
+          props.navigation.navigate({ routeName: 'CategoryMeals' });
+        }}
+      >
+        <View>
+          <Text>{itemData.item.title}</Text>
+        </View>
+      </TouchableOpacity>
+    );
+  };
+
+  return (
+    <FlatList
+      keyExtractor={(item, index) => item.id}
+      data={CATEGORIES}
+      renderItem={renderGridItem}
+      numColumns={2}
+    />
+  );
+}
+
+CategoriesScreen.navigationOptions = {
+  headerTitle: 'Meal Catgories',
+  headerStyle: {
+    backgroundColor: Platform.OS === 'android' ? Colors.primaryColor : ''
+  },
+  headerTintColor: Platform.OS === 'android' ? 'white' : Colors.primaryColor
+};
+```
+
+리액트 컴포넌트는 자바 스크립트 입장에서는 함수, 즉 객체입니다. CategoriesScreen 객체는 `navigationOptions` 멤버변수를 가집니다. `headerTitle`, `headerStyle`, `headerTintColor` (헤더 글자 색) 등을 설정할 수 있습니다.
+
