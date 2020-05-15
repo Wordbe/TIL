@@ -233,3 +233,63 @@ CategoriesScreen.navigationOptions = {
 
 리액트 컴포넌트는 자바 스크립트 입장에서는 함수, 즉 객체입니다. CategoriesScreen 객체는 `navigationOptions` 멤버변수를 가집니다. `headerTitle`, `headerStyle`, `headerTintColor` (헤더 글자 색) 등을 설정할 수 있습니다.
 
+
+
+## Navigation에서 파라미터를 넘기고 받아오는 방법
+
+```react
+<TouchableOpacity
+    style={styles.gridItem}
+    onPress={() => {
+        props.navigation.navigate({
+            routeName: 'CategoryMeals',
+            params: {
+                categoryId: itemData.item.id
+            }
+        });
+    }}
+>
+```
+
+위 컴포넌트는 파라미터를 넘기고 있습니다. `props.navigation.navigate()` 안에 객체의 키로 `params` 의 value안에 넘기고 싶은 파라미터를 입력할 수있습니다.
+
+```react
+function CategoryMealScreen(props) {
+  const catId = props.navigation.getParam('categoryId');
+  const selectedCategory = CATEGORIES.find((cat) => cat.id === catId);
+
+  return (
+    <View>
+      <Text>{selectedCategory.title}</Text>
+    </View>
+  );
+}
+```
+
+파라미터를 받아오는 컴포넌트 입니다. `props.navigation.getParam()` 을 통해 전달받은 id 파라미터를 읽어들이고,  id와 일치하는 객체를 받아 멤버변수 title을 출력하고 있습니다.
+
+
+
+## 동적 네비게이션 옵션(Dynamic NavigationOptions)
+
+받아온 파라미터를 통해 동적으로 헤더 등의 네비게이션 설정 값을 설정할 수 있습니다.
+
+```react
+CategoryMealScreen.navigationOptions = (navigationData) => {
+  const catId = navigationData.navigation.getParam('categoryId');
+  const selectedCategory = CATEGORIES.find((cat) => cat.id === catId);
+
+  return {
+    headerTitle: selectedCategory.title,
+    headerStyle: {
+      backgroundColor: Platform.OS === 'android' ? Colors.primaryColor : ''
+    },
+    headerTintColor: Platform.OS === 'android' ? 'white' : Colors.primaryColor
+  };
+};
+```
+
+navigationOptions 객체에 함수를 넣고, 객체를 반환시키면 됩니다.
+
+
+
