@@ -16,7 +16,7 @@ font 가 로딩되면 화면이 렌더링 되도록 구성해봅시다.
 
 **App.js**
 
-```React
+```jsx
 import React, { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import * as Font from 'expo-font';
