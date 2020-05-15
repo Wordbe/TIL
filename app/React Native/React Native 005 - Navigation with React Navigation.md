@@ -293,3 +293,123 @@ navigationOptions 객체에 함수를 넣고, 객체를 반환시키면 됩니�
 
 
 
+---
+
+## Default Navigation Option 설정
+
+기본 네비게이션 옵션 설정은  반복되는 코드를 줄이는 데 많은 도움이 됩니다.
+
+Navigator 에서 설정하면 됩니다.
+
+**MealsNavigator.js**
+
+```react
+const MealsNavigator = createStackNavigator(
+  {
+    Categories: {
+      screen: CategoriesScreen,
+      navigationOptions: {
+        headerTitle: 'Meal Categories'
+      }
+    },
+    CategoryMeals: {
+      screen: CategoryMealsScreen
+    },
+    MealDetail: MealDetailScreen
+  },
+  {
+    defaultNavigationOptions: {
+      headerStyle: {
+        backgroundColor: Platform.OS === 'android' ? Colors.primaryColor : ''
+      },
+      headerTintColor: Platform.OS === 'android' ? 'white' : Colors.primaryColor
+    }
+  }
+);
+
+export default createAppContainer(MealsNavigator);
+```
+
+* `defaultNavigationOptions` 는 기본 네비게이터 설정값을 정할 수 있습니다. 헤더 스타일의 속성이 자식 컴포넌트에서도 있어서 중복된다면, CSS 처럼 자식 컴포넌트에서 설정한 것이 더 우선순위가 됩니다.
+
+
+
+* `mode: ‘modal’` : 스크린을 넘기는 방식을 modal 형식으로 바꿉니다. 즉, 아래에서 위로 슬라이드 되는 방식으로 뷰가 넘어갑니다. 안드로이는 기본값이 이것이라 이렇게 설정해도 변함이없지만, iOS의 경우 원래는 좌우 슬라이드에서 아래 위로 슬라이가 됩니다.
+* `initialRouteName: ‘Categories’` : 초기에 렌더링 되는 뷰를 설정합니다.
+
+```shell
+$ npm install --save react-native-screens
+또는
+$ yarn add react-native-screens
+```
+
+App.js  에서 다음 코드를 입력해주면, screen 설정을 더 효율적으로 할 수 있습니다. (화면이 다른 점은 없습니다.) 그래서 이 코드를 넣는 것을 추천합니다.
+
+```react
+import { useScreens } from 'react-native-screens';
+
+useScreens();
+```
+
+
+
+## 스타일링, 리팩토링
+
+```react
+function CategoryGridTile(props) {
+  let TouchableCmp = TouchableOpacity;
+
+  if (Platform.OS === 'android' && Platform.Version >= 21) {
+    TouchableCmp = TouchableNativeFeedback;
+  }
+  return (
+    <View style={styles.gridItem}>
+      <TouchableCmp style={{ flex: 1 }} onPress={props.onSelect}>
+        <View
+          style={{ ...styles.container, ...{ backgroundColor: props.color } }}
+        >
+          <Text style={styles.title} numberOfLines={2}>
+            {props.title}
+          </Text>
+        </View>
+      </TouchableCmp>
+    </View>
+  );
+}
+
+const sytles = StyleSheet.create({
+  gridItem: {
+    flex: 1,
+    margin: 15,
+    height: 150,
+    borderRadius: 10,
+    overflow: 'hidden'
+  },
+  container: {
+    flex: 1,
+    borderRadius: 10,
+    shadowColor: 'black',
+    shadowOpacity: 0.26,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 10,
+    elevation: 3,
+    padding: 15,
+    justifyContent: 'flex-end',
+    alignItems: 'flex-end'
+  },
+  title: {
+    fontFamily: 'open-sans-bold',
+    fontSize: 22,
+    textAlign: 'right'
+  }
+});
+
+export default CategoryGridTile;
+```
+
+스타일링시 iOS에서는 잘 반영되는데, 안드로이드에서는 그렇지 못한 속성들이 있습니다. 특히 버전 21 이상의 안드로이드 경우에는 `TouchableOpacity` 대신  `TouchableNativeFeedback`을 사용하여 조금 더 부드러운 UI를 제공하였습니다. 
+
+컨테이너 속성의 다양한 shadow 속성들을 익혀놓으면 좋을 것 같고, 그 안에 있는 아이템의 정렬방식을 main-axis, cross-axis 둘다 ‘flex-end’로 설정하여서 데이터의 타이틀이 오른쪽 아래에 위치하게 만들었습니다.
+
+
+
