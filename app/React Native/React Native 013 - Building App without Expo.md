@@ -12,7 +12,7 @@
 
 Expo는 워크플로우를 관리합니다. 세팅할 것이 하나도 없고, 사용하기 편리하고, 많은 네이티브 모듈이 빌트인 되어있습니다.
 
-Expo CLI로 제어가 가능하고, Standalone app이 배포가 가능합니다. 즉, 안드로이드 스튜디오나 XCode가 기술적으로 필요하지 않습니다.
+Expo CLI로 제어가 가능하고, Standalone app(Expo가 필요없는)이 배포가 가능합니다. 즉, 안드로이드 스튜디오나 XCode가 기술적으로 필요하지 않습니다.
 
 
 
@@ -130,6 +130,8 @@ $ expo init RNWithExpoBare
 
 `react-native-unimodules` 페이지(깃헙)에 소개된 것처럼 android와 ios가 설정되어 있습니다.
 
+`react-native-unimodules` 는 엑스포 API를 Non-expo 앱에 지원하는 역할을 합니다.
+
 
 
 Bare Worflow 에는 사용할 수 있는 기본 API를 지원합니다. (ex. expo-location)
@@ -148,7 +150,49 @@ Bare Worflow 에는 사용할 수 있는 기본 API를 지원합니다. (ex. exp
 
 
 
+iOS 설정을 위해서,
 
+```shell
+$ pod install
+```
+
+을 실행하고,
+
+
+
+Android 설정을 위해서는
+
+https://github.com/expo/expo/tree/master/packages/react-native-unimodules 를 참고하여,
+
+`AndroidManifest.xml` 에 복사 붙여넣기 합니다.
+
+
+
+예제로 `react-native-maps` 를 설치해봅시다.
+
+Google Map API
+
+Google Clooud Platform > Maps SDK for Android
+
+```xml
+<meta-data 
+           android:name="com.google.android.geo.API_KEY"
+           .../>
+```
+
+ 구글 맵을 안드로이드에 연동합니다.
+
+
+
+이로써, image-picker를 통해 사진을 찍어서 앱에 업로드하고, maps를 통해 구글 맵으로 내 위치를 앱에 저장할 수 있는 간단한 stand alone 앱을 만들 수 있었습니다.
+
+
+
+Expo는 사용, 개발이 쉽고, Non-expo는 손수 설정을 해야 합니다. 하지만 그만큼 더 자유롭고, 독창적으로 구현할 수 있는 기능(thrid-parity 라이브러리 이용)이 많습니다. Expo는 native 모듈에 국한되어 있습니다.
+
+Expo는 iOS, Windows/Linux를 포함해서 배포가 가능하지만, Non-expo는 iOS 앱은 맥에서만 지원됩니다.
+
+Expo 는 크기와 성능이 중요하므로, wrapper 안에서 사용해야 하지만, Non-expo는 wrapper가 필요 없습니다.
 
 
 
