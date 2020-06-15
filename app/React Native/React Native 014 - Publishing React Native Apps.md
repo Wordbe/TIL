@@ -264,3 +264,33 @@ App Store Connect > New App
 
 ## Expo 없이 Android 앱 배포하기
 
+build.gradle
+
+grde.properti es
+
+```shell
+$ cd android/
+$ ./gradlew bundleRelease
+```
+
+
+
+[Google Play Console](https://developer.android.com/distribute/console) > App Release
+
+앱 아이콘 설정하기 : Android Studio > app> res > configure Image Asset
+
+
+
+---
+
+그 외
+
+
+
+\- 홈 화면이 나타날 때 앱 이름 설정: https://stackoverflow.com/questions/5443304/how-to-change-an-android-apps-name
+
+\- 앱의 bundle identifier, 패키지 이름 (다른 파일에서 tweaking을 필요로 한다.) https://developer.android.com/studio/build/application-id
+
+\- 앱 허가 정책: https://developer.android.com/guide/topics/manifest/manifest-intro#perms
+
+앱 버전을 설정하고, 앱 업데이트 시 매번 바꿔야 한다. `build.gradle`파일로 가능하다.  https://developer.android.com/studio/publish/versioning
