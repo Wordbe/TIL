@@ -261,11 +261,12 @@ export default function App() {
 
 
 
+---
 
+Expo 앱을 통해, 만든 환경을 띄워보려고 했는데 라이브러리 의존성 에러가 났다.
 
+부족한 라이브러리를 설치해주니, 잘 작동한다.
 
-
-
-
-
-
+```shell
+$ expo install react-native-screens react-native-reanimated react-native-safe-area-context @react-native-community/masked-view
+```
