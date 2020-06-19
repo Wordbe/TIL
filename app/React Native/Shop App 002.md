@@ -143,3 +143,169 @@ export default ProductsOverviewScreen;
 
 
 
+---
+
+## 2 상품 디테일, Touchable Component 추가하기
+
+새로운 화면을 만드는 단계입니다.
+
+새 화면(`ProductDetailScreen`)을 먼저 네비게이션에 등록해 줍니다.
+
+`navigation/ShopNavigator.js`
+
+```js
+...
+
+const ProductsNavigator = createStackNavigator(
+  {
+    ProductsOverview: ProductsOverviewScreen,
+    ProductDetail: ProductDetailScreen
+  },
+  {
+    defaultNavigationOptions: {
+      ...
+  }
+);
+
+export default createAppContainer(ProductsNavigator);
+```
+
+
+
+새로운 화면을 구성합시다.
+
+`screens/shop/ProductDetailScreen.js`
+
+```jsx
+import React from 'react';
+import {
+  ScrollVeiw,
+  View,
+  Text,
+  Image,
+  Button,
+  StyleSheet
+} from 'react-native';
+import { useSelector } from 'react-redux';
+
+const ProductDetailScreen = (props) => {
+  const productId = props.navigation.getParam('productId');
+  const selectedProduct = useSelector((state) =>
+    state.products.availableProducts.find((prod) => prod.id === productId)
+  );
+  return (
+    <View>
+      <Text>{selectedProduct.title}</Text>
+    </View>
+  );
+};
+
+ProductDetailScreen.navigationOptions = (navData) => {
+  return {
+    headerTitle: navData.navigation.getParam('productTitle')
+  };
+};
+
+const styles = StyleSheet.create({});
+
+export default ProductDetailScreen;
+```
+
+다시한번 리덕스와 네비게이션의 흐름을 상기시켜 봅시다.
+
+1) App 에서 provider로 store를 통해 루트 리듀서(여러 상태가 들어있음)를 제공합니다.
+
+2) ShopNavigator 에서 먼저 `ProductsOverviewScreen` 화면을 실행합니다.
+
+3) `ProductsOverviewScreen`는 renderItem에서 `ProductItem`을 반환합니다.
+
+4) `ProductItem`의 파라미터로 `onViewDetail` 속성에서 `ProductDetailScreen` 화면을 실행합니다. 
+
+
+
+`ProductDetailScreen` 은 위와 같이 그려져 있습니다.
+
+상품의 제목을 찾는 방법 2가지를 소개합니다.
+
+* navigation으로 실행될 때, id 속성도 같이 가지고 오므로, 가져온 id와 실제 상품의 id가 같으면, 아이템을 가져와서 제목(title)을 조사하면 됩니다.
+* 또는 navigation 실행 시 title 속성을 같이 바로 가져오면 됩니다.
+
+:+1:
+
+
+
+
+
+ProductItem에서 Touchable 컴포넌트를 추가해봅시다.
+
+iOS에서는 `TouchableOpacity`가 그대로 잘 작동하지만, Android의 경우 `TouchableNativeFeedback`를 사용합니다.
+
+`Touchable` 태그 안에는 아래 `<View>`처럼 하나의 태그만 있도록 설정해주면 안드로이드에서 에러가 발생하지 않습니다.
+
+또한 `Touchable`을 꾸미고 싶다면 `<View>`로 한번 감싸고 여기에 스타일을 주면 됩니다.
+
+```jsx
+import React from 'react';
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  Button,
+  TouchableOpacity,
+  TouchableNativeFeedback,
+  Platform
+} from 'react-native';
+
+import Colors from '../../constants/Colors';
+
+const ProductItem = (props) => {
+  let TouchableCmp = TouchableOpacity;
+  if (Platform.OS === 'android' && Platform.Version >= 21) {
+    TouchableCmp = TouchableNativeFeedback;
+  }
+  return (
+    <View style={styles.product}>
+      <View style={styles.touchable}>
+        <TouchableCmp onPress={props.onViewDetail} userForeground>
+          <View>
+            <View style={styles.imageContainer}>
+              <Image style={styles.image} source={{ uri: props.image }} />
+            </View>
+            <View style={styles.details}>
+              <Text style={styles.title}>{props.title}</Text>
+              <Text style={styles.price}>${props.price.toFixed(2)}</Text>
+            </View>
+            <View style={styles.actions}>
+              <Button
+                color={Colors.primary}
+                title="View Details"
+                onPress={props.onViewDetail}
+              />
+              <Button
+                color={Colors.primary}
+                title="To Cart"
+                onPress={props.onAddToCart}
+              />
+            </View>
+          </View>
+        </TouchableCmp>
+      </View>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  product: {
+    ...
+  },
+  touchable: {
+    borderRadius: 10,
+    overflow: 'hidden'
+  },
+  ...
+});
+
+export default ProductItem;
+```
+
