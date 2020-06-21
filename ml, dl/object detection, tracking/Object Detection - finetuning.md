@@ -47,6 +47,10 @@ Stage 2: 주어진 RoI들에 대해 클래스를 분류하고, bbox를 회귀하
 
 
 
+
+
+
+
 #### 2 One Stage Model
 
 > SSD, YOLO( + v2, v3, v4), RetinaNet 등
@@ -71,11 +75,11 @@ Mask R-CNN은 Instance Segmentation이 가능한, 즉 Object detection을 포함
 
 
 
-* Segmentation
+* **Segmentation**
 
 ![](https://i.ibb.co/929fP6c/image.png)
 
-* Mask R-CNN
+* **Mask R-CNN**
 
 ![](https://i.ibb.co/72qmdLH/image.png)
 
