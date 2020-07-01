@@ -324,3 +324,93 @@ const CustomHeaderButton = (props) => {
 export default CustomHeaderButton;
 ```
 
+
+
+---
+
+## CartItem 컴포넌트 생성
+
+
+
+장바구니 화면에서, 장바구니 상품의 골격인 CartItem Component입니다.
+
+```javascript
+import React from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Platform
+} from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+
+const CartItem = (props) => {
+  return (
+    <View style={styles.cartItem}>
+      <TexT style={styles.itemData}>
+        <Text style={styles.quantity}>{props.quantity} </Text>
+        <Text style={styles.mainText}>{props.title}</Text>
+      </TexT>
+      <View style={styles.itemData}>
+        <Text style={styles.mainText}>${props.amount.toFixed(2)}</Text>
+        <TouchableOpacity onPress={props.onRemove} style={styles.deleteButton}>
+          <Ionicons
+            name={Platform.OS === 'android' ? 'md-trash' : 'ios-trash'}
+            size={23}
+            color="red"
+          />
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  cartItem: {
+    padding: 10,
+    backgroundColor: 'white',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginHorizontal: 20
+  },
+  itemData: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  quantity: {
+    fontFamily: 'open-sans',
+    color: '#888',
+    fontSize: 16
+  },
+  mainText: {
+    fontFamily: 'open-sans-bold',
+    fontSize: 16
+  },
+  deleteButton: {
+    marginLeft: 20
+  }
+});
+
+export default CartItem;
+```
+
+
+
+CartScreen.js 에서 FlatList를 생성해서 위 CartItem을 넣어봅시다.
+
+```jsx
+<FlatList
+    data={cartItems}
+    keyExtractor={(item) => item.productId}
+    renderItem={(itemData) => (
+        <CartItem
+            quantity={itemData.item.quantity}
+            title={itemData.item.propductTitle}
+            amount={itemData.item.sum}
+            onRemove={() => {}}
+            />
+    )}
+/>
+```
+
