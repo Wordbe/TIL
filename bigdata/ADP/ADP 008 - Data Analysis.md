@@ -95,3 +95,141 @@ k개의 모수적 모형(정규분포 또는 다변량 정규분포 가정)의 �
 * 1) 랜덤으로 모수 모델 초기화 후 각 관측치는 각 군집에 속할 확률이 계산된다.
 * 2) E-step : 각 자료가 속한 집단에 대한 정보를 가지는 잠재변수(latent variable)를 계산한다.
 * 3) M-step : 위 확률을 통해 최대우도추정으로 모수를 추정하고, 모수값이 변화가 없을 때까지 반복한다.
+
+
+
+---
+
+# 13 밀도기반군집(Density-based Clustering)
+
+* 밀도가 높은 데이터가 가까이 위치하면 동일한 군집으로 묶는 방식이다.
+* 임의의 형태의 군집을 찾는 장점이 있다.
+* 대표적으로 DBSCAN(Density-Based Spatial Clustering of Application with Noise) 알고리즘이 있다.
+* 2개의 파라미터 (**Eps**, 군집 내 개체 최소수(**MinPts**))
+
+Step
+
+* 1) eps, minPts 설정
+* 2) 잡음점 군집에서 제외
+* 3) eps 반경 안에 있는 코어점들을 서로 연결
+* 4) 연결된 코어점들을 하나의 군집으로 형성
+* 5) 경계점은 코어점을 포함하는 군집 중 하나에 할당
+
+장점
+
+* K-means 와는 달리 군집 수를 미리 정할 필요가 없다.
+* 임의 형태를 가지는 군집 찾을 수 있다.
+* 잡음 정보를 제공하며 이상치에 민감하지 않다.
+* DB 값 순서에 민감하지 않다.
+
+단점
+
+* 경계점은 두 군집 모두에 속할 수 있다.
+
+
+
+---
+
+# 14 퍼지 군집(Fuzzy Clustering)
+
+k-means 또는 PAM 군집 등에서 자료의 각원소들은 한 개의 군집으로만 할당된다. 이를 하드군집 또는 비퍼지군집이라한다.
+
+퍼지군집(또는 소프트군집)은 **각 원소는 각 군집에 속할 확률**을 갖는다. 
+
+* `fanny`
+
+
+
+---
+
+# 15 K-NN (K-Nearest Neighbors)
+
+K-NN 분류모형은 새로운 데이터에 대해 가장 유사한(거리) K개의 과거자료 결과를 이용하여 다수결로 분류한다.
+
+과거의 자료를 단순 저장하고, 새로운 데이터가 있을 시 비교하여 분류하기 때문에 Lazy model 또는 사례기반 학습이라 한다.
+
+* 단점: 데이터 지역 구조에 민감하다.
+
+```R
+data(iris)
+install.packages("DMwR")
+library(DMwR)
+
+df <- sample(1:nrow(iris), as.integer(0.7 * nrow(iris)))
+trainiris <- iris[df, ]
+testiris <- iris[-df, ]
+
+# k=3
+nc3 <- kNN(Species~., trainiris, testiris, norm=FALSE, k=3)
+table(testiris[, 'Species'], nc3)
+
+# k=5
+nc5 <- kNN(Species~., trainiris, testiris, norm=FALSE, k=5)
+table(testiris[, 'Species'], nc5)
+```
+
+
+
+---
+
+# 16 SVM, Suport Vector Machine
+
+* 마진 : 서로 다른 클래스에 속하는 점들 사이의 최단 거리
+* 초평면 : 데이터를 특성별로 분리하는 초평면이란, 가장 가까운 훈련 데이터 까지 거리가 가장 큰 경우
+
+* SVM은 입력 피처의 2차 이상 다항식을 비선형으로 모형화 할 수 있다. 이를 커널기법(Kernel Trick)이라 한다.
+* 2개 파라미터: cost(초평면과 마진 간격 결정), gamma(영향력을 미치는 범위)
+  * cost가 크면 마진을 좁게형성, 초평면이 복잡해진다.
+
+```R
+data(iris)
+
+library(e1071)
+svm <- svm(Species~., data=iris, type="C-classification", kernel='radial', cost=10, gamma=0.1)
+# type: svm 수행방법 (분류, 회귀)
+# kernel: radial은 가우시안 RBF
+# degree: 다항 커널의 경우 모수(차수)이며, gamma, cost 등이 있다.
+summary(svm)
+
+pred <- predict(svm, iris, decision.values = TRUE)
+table(pred, iris$Species)
+```
+
+
+
+
+
+---
+
+# 17 연관성분석(Association Analysis)
+
+상품, 서비스 등의 조합을 찾아내 상품 추천, 상품 배치, 마케팅 개발 등으로 끼워팔기를 통해 이득을 볼 수 있게하는 데이터 마이닝 기법.
+
+### 1) `arules` 패키지
+
+* Apriori, ECLAT
+
+> FP-GROWTH 알고리즘
+>
+> 후보 빈발항목집합 생성하지 않고, FP-Tree를 이용하여 빠르게 빈발항목집합을 추출할 수 있다.
+
+
+
+---
+
+# 18 순차 패턴 분석(Sequence Pattern Analysis)
+
+What goes after what?
+
+
+
+
+
+
+
+
+
+
+
+
+
