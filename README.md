@@ -1,6 +1,6 @@
 # TIL
 
-## Road
+## Journey ⛴
 
 My repostitory :smile:
 
