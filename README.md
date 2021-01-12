@@ -1,6 +1,6 @@
 # TIL
 
-## Programming
+## Road
 
 My repostitory :smile:
 
@@ -10,9 +10,20 @@ My repostitory :smile:
 
 아래와 같은 분야에 관심이 있어 공부하고 있습니다.
 
-### 1. ML/DL
 
-* supervised - 특히 **deep learning**
+
+### 1. BE
+
+* Java Spring
+* Spring boot
+* JPA
+* SQL (Oracle, Mysql)
+
+
+
+### 2. ML/DL
+
+* supervised - deep learning
 
   Vision, NLP
 
@@ -20,12 +31,7 @@ My repostitory :smile:
 
 * reinforcement
 
-
-
-### 2. BE
-
-* Web server
-* Spring, Spring boot, JPA
+* pytorch / tensorflow
 
 
 
@@ -41,6 +47,7 @@ My repostitory :smile:
 
 * Hadoop, Hive
 * Spark
+* R
 
 
 
