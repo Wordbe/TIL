@@ -100,9 +100,9 @@ Resource Server 는 로그인 화면을 보여준다.
 
 Resource Owner 는 ID, PW 를 입력한다. 
 
-Resource Sever 는 여기서 받은 ID 와 자신이 가지고 있던 ID 를 비교한다. 요청에 들어왔던 redirect_uri 와 자신이 가지고 있떤 redirect_uri 가 같은지도 확인한다.
+Resource Sever 는 Owner가 요청했던 URL 에서 Client id 와 자신이 가지고 있던 Client id 를 비교한다. 요청에 들어왔던 redirect_uri 와 자신이 가지고 있던 redirect_uri 가 같은지도 확인한다.
 
-그 후에 Resource Owner 에게 scope 에 대한 정보(A, B)를 허용할 것인지 선택하는 화면을 보낸다.
+비교하여 일치한다면 Resource Owner 에게 scope 에 대한 정보(A, B)를 허용할 것인지 선택하는 화면을 보낸다.
 
 Resource Owner가 허용한다면, Resrouce Server 가 가지고 있는 최종값은 아래와 같다.
 
@@ -216,16 +216,34 @@ access token 은 수명이 있다. 일정 시간이 지나면 사라진다.
 
 Client
 
-* ------   Authorization Grant (인가 승인) ------>
-* <------ Access Token & Refresh Token ------
-* ------ Access Token ------>
-* <------ Protected Resource ------
-* ------ Access Token ------>
-* <------  Invalid Token Error ------
-* ------ Refresh Toekn ------>
-* <------ Acces Toekn ------
+```json
+  +--------+                                           +---------------+
+  |        |--(A)------- Authorization Grant --------->|               |
+  |        |                                           |               |
+  |        |<-(B)----------- Access Token -------------|               |
+  |        |               & Refresh Token             |               |
+  |        |                                           |               |
+  |        |                            +----------+   |               |
+  |        |--(C)---- Access Token ---->|          |   |               |
+  |        |                            |          |   |               |
+  |        |<-(D)- Protected Resource --| Resource |   | Authorization |
+  | Client |                            |  Server  |   |     Server    |
+  |        |--(E)---- Access Token ---->|          |   |               |
+  |        |                            |          |   |               |
+  |        |<-(F)- Invalid Token Error -|          |   |               |
+  |        |                            +----------+   |               |
+  |        |                                           |               |
+  |        |--(G)----------- Refresh Token ----------->|               |
+  |        |                                           |               |
+  |        |<-(H)----------- Access Token -------------|               |
+  +--------+           & Optional Refresh Token        +---------------+
 
-Resource Server + Authorization Server
+              Refreshing an Expired Access Token
+```
+
+[출처: RFC 6749: The OAuth 2.0 Authorization Framework](https://tools.ietf.org/html/rfc6749)
+
+Resource Server 는 사실 Resource Server + Authorization Server
 
 
 
