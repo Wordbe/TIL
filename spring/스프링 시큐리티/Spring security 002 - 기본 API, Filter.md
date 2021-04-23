@@ -6,6 +6,8 @@
 
 
 
+![](https://i.ibb.co/MVjQGPM/image.png)
+
 1. 요청을 받으면 `AnonymousAuthenticationFilter` 가 동작한다.
 
 2. `SecurityContext` 안에 `Authentication` 객체가 존재하는지 확인한다. 객체가 존재하면 인증을 받은 것이므로 `chain.doFilter` 로 넘어가서 다른 필터로 넘어간다.
@@ -28,6 +30,8 @@
 ## 동시 세션 제어 (같은 아이디로 동시 로그인)
 
 
+
+![](https://i.ibb.co/746yQqZ/image.png)
 
 같은 아이디로 동시 로그인 했을 때
 
@@ -78,6 +82,8 @@ public class BookSecurityConfig extends WebSecurityConfigurerAdapter {
 
 
 
+![](https://i.ibb.co/GQ65dhs/2021-04-16-12-45-57.png)
+
 **세션고정 (SF, Session Fixation)**
 
 * 공격자가 WebApp 에 접속해서 JSESSIONID=1234 를 발급받는다.
@@ -111,6 +117,8 @@ http.sessionManagement()
 
 
 
+
+
 4가지 세션 정책이 있다.
 
 ```java
@@ -133,6 +141,8 @@ SessionCreationPolicy.STATELESS // 생성하지도 않고, 존재해도 사용�
 ## 세션 제어 필터
 
 
+
+![](https://i.ibb.co/xH4rf2t/2021-04-16-12-46-54.png)
 
 ### `SessionManagementFilter`
 

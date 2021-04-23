@@ -110,6 +110,8 @@ Resource Server
 
 ![](https://i.ibb.co/JyHW631/2021-04-04-11-52-57.png)
 
+<br />
+
 **1) Resource Owner 와 Client**
 
 Resource Owner 는 Client 의 서비스를 사용중이다.
@@ -120,9 +122,9 @@ Client 는 Resource Owner 에게 구글 로그인 버튼을 보여준다.
 
 Client 는 구글 로그인 버튼에 `https://resource.server/?client_id=1&scope=A,B&redirect_uri=https://client/callback` uri 를 만든다.
 
+
+
 <br />
-
-
 
 **2) Resource Owner 와 Resource Server**
 

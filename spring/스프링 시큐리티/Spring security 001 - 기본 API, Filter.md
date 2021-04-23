@@ -21,6 +21,8 @@ public class BookController {
 
 
 
+
+
 ## Spring security 의존성 추가
 
 pom.xml
@@ -42,7 +44,7 @@ pom.xml
 
   * 모든 요청은 인증되어야 자원에 접근이 가능하다.
 
-  * 인증방식은 Form 로그인 방식, HTTPBasic fhrmdls qkdtlrdmf wprhdgksek.
+  * 인증방식은 Form 로그인 방식, HTTPBasic 로그인 방식을 제공한다.
 
   * 기본 로그인 페이지를 제공한다.
 
@@ -65,6 +67,12 @@ pom.xml
 ---
 
 ## 사용자 정의 보안 기능
+
+
+
+현재까지 진행했다면 사용자 계정이 1개, 권한도 추가, 변경 기능 없음, 보안 옵션도 부재
+
+![](https://i.ibb.co/WpMxMfr/2021-04-16-12-31-52.png)
 
 
 
@@ -135,7 +143,7 @@ spring.security.user.password=1234
 
 ## Form 인증
 
-
+![](https://i.ibb.co/8xDVYhc/2021-04-16-12-34-45.png)
 
 1) Client → Server : 페이지 요청
 
@@ -175,7 +183,7 @@ protected void configure(HttpSecurity http) throws Exception {
 
 ## Form Login 인증 필터
 
-
+![](https://i.ibb.co/MChQdwK/2021-04-16-12-36-45.png)
 
 1. 요청이 들어오면 `UsernamePasswordAuthenticationFilter` : 요청 정보가 매칭되는지 확인한다.
 2. `AntPathRequestMatcher("/login")` : 요청 url 이 "/login" (기본값) 인지 확인한다. 매칭되지 않으면 `chain.doFilter` 한다. 그리고 "/login" 화면으로 리다이렉트한다.
@@ -223,6 +231,8 @@ protected void configure(HttpSecurity http) throws Exception {
 * GET 으로 구현할 수는 있다.
 
 <br />
+
+![](https://i.ibb.co/n6b03KZ/2021-04-16-12-39-19.png)
 
 1) 요청이 들어오면 `LogoutFilter` 가 동작한다.
 
@@ -318,6 +328,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 ---
 
 ## Remember Me 인증 필터
+
+![](https://i.ibb.co/fMLp1gN/2021-04-16-12-42-06.png)
 
 <br />
 
