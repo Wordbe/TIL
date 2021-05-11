@@ -125,7 +125,17 @@ public class FormAuthenticationProvider implements AuthenticationProvider {
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final FormAuthenticationProvider formAuthenticationProvider;
   
-  	...
+  	@Override
+  	public void configure(HttpSecurity http) throws Exception {
+      http.
+        .formLogin()
+          .loginPage("/login")
+          .loginProcessingUrl("/login_proc")
+          .successHandler(formSuccessHandler)
+          .permitAll()
+        .and()
+        	.authenticationProvider(formAuthenticationProvider)
+    }
       
     @Override
     protected void configure(AuthenticationManagerBuilder auth) {
@@ -134,7 +144,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 }
 ```
 
-마지막으로 위에서 만들어준 객체를 `SecurityConfig` 에 빈으로 주입하여 `auth.authenticationProvider`에 등록합니다.
+마지막으로 위에서 만들어준 객체를 `SecurityConfig` 에 빈으로 주입하여 `authenticationProvider()` 메소드에 등록합니다.
 
 
 

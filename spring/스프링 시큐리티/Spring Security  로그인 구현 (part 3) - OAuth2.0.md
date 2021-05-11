@@ -4,6 +4,22 @@
 
 
 
+지난 시간까지는 Form 로그인에 대해서 ( [Spring Security 로그인 구현 (part1) - form login](https://wordbe.tistory.com/entry/Spring-Security-%EB%A1%9C%EA%B7%B8%EC%9D%B8-%EA%B5%AC%ED%98%84-part-1-form-login), [Spring Security 로그인 구현 (part1) - form login](https://wordbe.tistory.com/entry/Spring-Security-%EB%A1%9C%EA%B7%B8%EC%9D%B8-%EA%B5%AC%ED%98%84-part-2-form-login) ) 알아보았습니다.
+
+<br />
+
+하지만 우리가 자주 사용하는 로그인의 또 다른 방식으로 OAuth 로그인이 있습니다.
+
+구글 같은 소셜서비스를 이용해 대신 로그인을 해서 서비스를 사용해본 적이 있으신가요?
+
+OAuth 로그인 방식으로 이를 가능하게 할 수 있습니다.
+
+OAuth2.0 에 대한 자세한 내용은 [이 글(OAuth 2.0 설명)](https://wordbe.tistory.com/entry/OAuth-20-%EC%84%A4%EB%AA%85)에 포스팅 해놓았습니다. 참고바랍니다.
+
+<br >
+
+우리는 서비스 서버에서 OAuth 로그인을 어떻게 구현하는지 알아봅시다.
+
 먼저 OAuth2.0 로그인용 엔티티를 생성합니다.
 
 ```java
@@ -188,6 +204,14 @@ public class OAuthAttributes {
 이제 `localhost:8080/oauth2/authorization/google` URL에 요청을 보내면 구글 인증으로 리다이렉트가 되면서
 
 사용자는 자신의 구글계정을 인증하게 됩니다. 이 인증과정이 성공했을 경우, 로그인 성공 페이지로 돌아오게 됩니다. 기본은 "/" 입니다.
+
+
+
+
+
+> 스프링부트와 AWS와 AWS로 혼자 구현하는 웹 서비스 참고 - 이동욱 저
+
+
 
 
 
