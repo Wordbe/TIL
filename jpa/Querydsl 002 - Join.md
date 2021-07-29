@@ -152,7 +152,7 @@ tuple = [Member(id=9, username=teamC, age=0), null]
 
 ## 페치 조인
 
-SQL 에서 제공하는 기능은 아니고, SQL 조인을 활용해서 연관된 엔티티를 SQL 한번에 조회한느 기능이다. 주로 성능 최적화에 사용한다.
+SQL 에서 제공하는 기능은 아니고, SQL 조인을 활용해서 연관된 엔티티를 SQL 한번에 조회하는 기능이다. 주로 성능 최적화에 사용한다.
 
 ```java
 @PersistenceUnit
