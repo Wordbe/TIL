@@ -42,7 +42,7 @@ public String updateItem(@PathVariable String itemId, @ModelAttribute("form") Bo
 }
 ```
 
-여기서 `itemdId` 는 DB에 저장된 id 이다. `updateItemForm` 로직에서 이 아이디를 받고, 새로운 엔티티를 만들어 집어넣는다. (DB에는 있지만, 엔티는 영속성 컨텍스트에 들어있지 않은 준영속 상태)  준영속 상태의 엔티티를 저장하려고할 때, 변경감지는 일어나지 않는다.
+여기서 `itemdId` 는 DB에 저장된 id 이다. `updateItemForm` 로직에서 이 아이디를 받고, 새로운 엔티티를 만들어 집어넣는다. **(DB에는 있지만, 엔티는 영속성 컨텍스트에 들어있지 않은 준영속 상태)**  준영속 상태의 엔티티를 저장하려고할 때, 변경감지는 일어나지 않는다.
 
 
 

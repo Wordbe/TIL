@@ -41,7 +41,7 @@ public class SimpleJpaRepository<T, ID> implements JpaRepositoryImplementation<T
 
 ## 새로운 엔티티를 구별하는 방법
 
-- 식별자가 객체일 떄 null 로 판단
+- 식별자가 객체일 때 null 로 판단
 - 식별자가 기본 타입(primitive type)일 때 0 으로 판단
 - `Persistable` 인터페이스를 구현해서 판단 로직 변경 가능 (GeneratedValue 사용할 수 없을 때 유용)
 
@@ -208,7 +208,7 @@ public class Item implements Persistable<String> {
 
   @Override
   public boolean isNew() {
-    return createdDate == null; // 생성일자가 없을 경우 새것으로 설정
+    return createdDate == null; // 생성일자가 없을 경우 새것으로 인정
   }
 }
 ```

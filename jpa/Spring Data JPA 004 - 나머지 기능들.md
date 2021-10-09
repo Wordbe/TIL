@@ -82,7 +82,7 @@ public class MemberSpec {
 
 ---
 
-## Queery By Example
+## Query By Example
 
 
 
