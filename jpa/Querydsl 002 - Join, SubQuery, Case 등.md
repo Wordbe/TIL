@@ -1,4 +1,4 @@
-# Querydsl 002 - Join, Subquery 등
+# Querydsl 002 - Join, SubQuery, Case 등
 
 
 
@@ -278,7 +278,7 @@ public void selectSubQuery() {
 ### from 절의 서브쿼리 한계
 
 - JPA JPQL 서브쿼리는 from 절의 서브쿼리 (인라인 뷰)를 지원하지 않는다. Querydsl 도 지원하지 않는다.
-- 하이버네이트 구현체를 상요하면 select 절의 서브쿼리는 지원한다. Querydsl도 하이버네이트 구현체를 사용하면 select 절의 서브쿼리를 지원한다.
+- 하이버네이트 구현체를 사용하면 select 절의 서브쿼리는 지원한다. Querydsl도 하이버네이트 구현체를 사용하면 select 절의 서브쿼리를 지원한다.
 
 ### from 절의 서브쿼리 해결방안
 
