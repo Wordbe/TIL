@@ -116,7 +116,7 @@ void templateMethodV2() {
   };
   template1.execute();
 
-  AbstractTemplate template2= new AbstractTemplate() {
+  AbstractTemplate template2 = new AbstractTemplate() {
     @Override
     public void call() {
       log.info("익명클래스: 비즈니스 로직2 실행");
