@@ -43,7 +43,7 @@ public class Badge {
 
 데이터를 저장한 후 commit 시점에 최적의 상황을 고려하여 쿼리를 실행시키는 것이 아니라,  `persist()` 시점에 insert 문이 바로 실행되고 DB 에서 기본키 값을 생성한다. 그리고 이 키 값을 가져와서 JPA 1차 캐시에 (key, entity) 키, 값을 저장한다.
 
-따라서 IDENTITY 옵션 사용시 write-behind (변경감지) 기능을 무시한다. write-behind 는 한 트랜잭션 안에서 이루어지는 성능 최적화이므로 이 부분은 이루어지지 않아도 양보가 가능하다. 단, bulk insert 가 안되는 문제가 있을 수 있다. (다른 해결책이 있음)
+따라서 IDENTITY 옵션 사용시 write-behind (쓰기지연) 기능을 무시한다. write-behind 는 한 트랜잭션 안에서 이루어지는 성능 최적화이므로 이 부분은 이루어지지 않아도 양보가 가능하다. 단, bulk insert 가 안되는 문제가 있을 수 있다. (다른 해결책이 있음)
 
 - MySQL, PostgreSQL, SQL Server, DB2 등에서 주로 사용한다.
 
@@ -185,7 +185,11 @@ public class Badge {
 }
 ```
 
-이 전략옵션은 말그대로 '자동'으로 적절한 전략을 알아서 매핑시킨다. Hibernate 는 적절한 옵션을 알아내기 위해 아래 논리대로 탐색한다.
+이 전략옵션은 말그대로 '자동'으로 적절한 전략을 알아서 매핑시킨다. `@GeneratedValue` 라고만 쓰면 기본으로 AUTO 옵션을 사용한다.
+
+
+
+Hibernate 는 적절한 옵션을 알아내기 위해 아래 논리대로 탐색한다.
 
 1. 기본키 타입이 `UUID ` 일 때 `UUID Generator`가 된다.
 
@@ -198,6 +202,10 @@ public class Badge {
    ​	2-2-1. 이 때 데이터베이스가 Sequence 를 지원하지 않는다면 `TABLE Generator` 를 사용한다.
 
 
+
+>  만약, MySQL 을 사용하고, 아무 옵션도 주지 않았다면, AUTO 로 적용되어 SEQUENCE 로 기본키를 자동으로 생성하게 될 것이다.
+
+<br />
 
 <br />
 
