@@ -11,15 +11,19 @@ My repostitory :smile:
 아래와 같은 분야에 관심이 있어 공부하고 있습니다.
 
 
-
+---
+(Mainly used)
 ### 1. BE
 
-* Java Spring
-* Spring boot
+* Java, Spring, Spring boot
 * JPA
 * SQL (Oracle, Mysql)
 
 
+
+
+---
+(What I have been used)
 
 ### 2. ML/DL
 
@@ -46,6 +50,7 @@ My repostitory :smile:
 ### 4. Data
 
 * Hadoop, Hive
+* sqoop
 * Spark
 * R
 
