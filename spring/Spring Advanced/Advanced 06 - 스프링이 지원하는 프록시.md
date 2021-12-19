@@ -157,7 +157,7 @@ public class ProxyFactoryTest {
   void 인터페이스가_있어도_CGLIB를_사용한다() { // ProxyTargetClass 사
     ServiceImpl target = new ServiceImpl();
     ProxyFactory proxyFactory = new ProxyFactory(target);
-    proxyFactory.setProxyTargetClass(true);
+    proxyFactory.setProxyTargetClass(true); // 클래스기반 프록시를 만들도록 설정
     proxyFactory.addAdvice(new TimeAdvice());
     ServiceImpl proxy = (ServiceImpl) proxyFactory.getProxy();
     log.info("targetClass={}", target.getClass());
