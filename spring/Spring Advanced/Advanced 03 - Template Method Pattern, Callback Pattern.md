@@ -1,4 +1,4 @@
-# Advanced 03 - Template Method Pattern, Callback Pattern
+﻿# Advanced 03 - Template Method Pattern, Callback Pattern
 
 
 
@@ -262,7 +262,7 @@ public class OrderRepositoryV4 {
 >
 > - 알고리즘 제품군을 정의하고 각각을 캡슐화 하여 상호 교환하게 만든다. 전략을 사용하면 알고리즘을 사용하는 클라이언트와 독립적으로 알고리즘을 변경할 수 있다.
 
-![스크린샷 2021-11-29 오전 1.52.47](/Users/rdijin/Library/Application Support/typora-user-images/스크린샷 2021-11-29 오전 1.52.47.png)
+![스크린샷 2021-11-29 오전 1.52.47](https://i.ibb.co/0jqNYhm/2021-11-29-1-52-47.pngg)
 
 
 
@@ -271,7 +271,7 @@ public class OrderRepositoryV4 {
 - `Context` 는` Strategy` 의 인터페이스에만 의존한다. 덕분에 `Strategy` 의 구현체를 변경하거나 새로 만들어도 `Context` 에는 영향을 주지 않는다. (변경하지 않아도 된다.)
 - **:bulb: 스프링에서 의존관계 주입에서 사용하는 방식이 바로 전략 패턴이다.**
 
-![스크린샷 2021-11-29 오전 2.04.51](/Users/rdijin/Library/Application Support/typora-user-images/스크린샷 2021-11-29 오전 2.04.51.png)
+![스크린샷 2021-11-29 오전 2.04.51](https://i.ibb.co/VCHPL1n/2021-11-29-2-04-51.png)
 
 ## 전략 패턴 -필드 주입
 
