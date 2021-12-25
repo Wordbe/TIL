@@ -1,4 +1,4 @@
-# Advanced 04 - Proxy Pattern, Decorator Pattern
+﻿# Advanced 04 - Proxy Pattern, Decorator Pattern
 
 
 
@@ -112,11 +112,11 @@ public class AdvancedApplication {
 
   - 서버와 프록시는 같은 인터페이스를 사용해야 한다. 클라이언트가 사용하는 서버 객체를 프록시 객체로 변경해도 클라이언트 코드를 변경하지 않고 동작할 수 있어야 한다.
 
-    ![스크린샷 2021-12-01 오전 12.15.37](/Users/rdijin/Library/Application Support/typora-user-images/스크린샷 2021-12-01 오전 12.15.37.png)
-
+    ![스크린샷 2021-12-01 오전 12.15.37](https://i.ibb.co/54vzt7H/2021-12-01-12-15-37.png)
+    
 클래스 의존관계를 보면 클라이언트는 서버 인터페이스에만 의존한다. 서버와 프록시가 같은 인터페이스를 사용한다. 따라서 DI를 사용해서 대체가 가능하다.
 
-![스크린샷 2021-12-01 오전 12.17.31](/Users/rdijin/Library/Application Support/typora-user-images/스크린샷 2021-12-01 오전 12.17.31.png)
+![스크린샷 2021-12-01 오전 12.17.31](https://i.ibb.co/44K3Ghn/2021-12-01-12-17-31.png)
 
 런타임 객체 의존 관계
 
@@ -301,7 +301,7 @@ void decorator1() {
 
 ### 데코레이터 체인 (여러개)
 
-![스크린샷 2021-12-01 오전 2.05.55](/Users/rdijin/Library/Application Support/typora-user-images/스크린샷 2021-12-01 오전 2.05.55.png)
+![스크린샷 2021-12-01 오전 2.05.55](https://i.ibb.co/bHwgLpT/2021-12-01-2-05-55.png)
 
 
 
@@ -344,7 +344,7 @@ void decorator_chain() {
 
 ---
 
-![스크린샷 2021-12-01 오전 2.07.17](/Users/rdijin/Library/Application Support/typora-user-images/스크린샷 2021-12-01 오전 2.07.17.png)
+![스크린샷 2021-12-01 오전 2.07.17](https://i.ibb.co/51pPxQr/2021-12-01-2-07-17.png)
 
 - 꾸며주는 역할을 하는 Decorator 들은 스스로 존재할 수 없다. 항상 꾸며줄 대상이 있어야 한다.
 - 따라서 내부 호출 대상인 component 를 가지고 있어야 한다. 그리고 component 를 항상 호출해야 한다. 이 부분이 중복이다.
@@ -369,7 +369,7 @@ void decorator_chain() {
 
 애플리케이션 실행 시점에 프록시를 사용하도록 의존 관계를 설정해주어야 한다. 이 부분은 빈을 등록하는 설정 파일을 활용하면 된다.
 
-![스크린샷 2021-12-01 오후 11.22.29](/Users/rdijin/Library/Application Support/typora-user-images/스크린샷 2021-12-01 오후 11.22.29.png)
+![스크린샷 2021-12-01 오후 11.22.29](https://i.ibb.co/Hqkk76w/2021-12-01-11-22-29.png)
 
 ```java
 @Configuration
