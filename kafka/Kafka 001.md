@@ -156,3 +156,84 @@ producer.close();
 
 
 
+# Kafka Consumer
+
+## Consumer 역할
+
+- Topic 의 partition 으로부터 데이터 polling
+
+  - 메시지를 가져와서 특정 DB 에 저장하거나 또 다른 파이프라인으로 전달한다.
+
+- 파티션 offset 위치 기록 (commit)
+
+  - 오프셋이란 파티션에 있는 데이터번호
+  - 토픽 별로, 파티션 별로 따로 지정된다. 
+  - 컨슈머가 어느지점까지 읽었는지 확인하는 용도로 활용된다.
+  - 컨슈머가 poll 로 데이터를 가져가면, `__consuemr_offsets` 토픽에 읽었던 offset 정보를 저장한다.
+    - 따라서 컨슈머에 장애가 발생해도, 중지된 위치부터 다시 복구하여 데이터 처리를 할 수 있다. (HA)
+
+- Consumer group 을 통해 병렬처리
+
+  - 병렬처리 한다면, 파티션 개수보다 적거나 같은 개수로 컨슈머를 설정한다.
+  - 나머지 컨슈머는 놀게 된다.
+
+  ![](https://i.ibb.co/bFmydyT/2022-01-25-11-32-50.png)
+
+  - 또한 컨슈머 그룹이 여러개라면, `__consumer_offsets` 도 별개로 저장된다.
+  - 컨슈머 그룹별로, 토픽별, 파티션별로 저장된다.
+
+  ![](https://i.ibb.co/S6fX95F/2022-01-25-11-35-13.png)
+
+
+
+<br />
+
+## Kafka consumer - java
+
+```groovy
+// gradle
+compile group: 'org.apache.kafka', name: 'kafka-clients', version: '2.3.0'
+```
+
+- kafka client 가 kafka broker 와 호환가능한 버전인지 반드시 확인한다.
+
+
+
+```java
+Properties configs = new Properties();
+configs.put("bootstrap.servers", "localhost:9092");
+configs.put("group.id", "click_log_group");
+configs.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+configs.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+
+KafkaConsumer<String, String> consumer = new KafkaConsumer<>(configs);
+
+consumer.subscribe(Arrays.asList("click_log")); // topic 전체를 가지고 온다.
+// 해당 topic 의 특정 partition 만 가지고 오려면 아래와 같이
+// TopicPartition partition0 = new TopicPartition(topicName, 0);
+// TopicPartition partition1 = new TopicPartition(topicName, 1);
+// consumer.assign(Arrays.asList(partition0, partition1));
+
+while(true) {
+  ConsumerRecords<String, String> records = consumer.poll(500);
+  for (ConsumerRecord<String, String> record: records) {
+    System.out.println(record.value());
+    // 이 곳에서 다른 DB 에 저장하는 로직을 넣는다.
+  }
+}
+```
+
+- 가용성을 늘리기 위해 여러 브로커를 등록하는 것을 권장
+
+- 컨슈머 그룹(`group.id`) : 컨슈머 묶음
+
+- 폴링 루프 : poll 메소드가 포함된 루프
+
+  - 컨슈머가 허락하는 한 많은 데이터를 읽는다.
+  - 500ms 동안 데이터가 들어오길 기다리고, poll 실행된다.
+    - 데이터가 들어오지 않는다면, 빈 값을 반환하고 records 는 빈 값으로 저장된다.
+
+  ​
+
+
+
