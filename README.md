@@ -10,15 +10,23 @@ My repostitory :smile:
 
 아래와 같은 분야에 관심이 있어 공부하고 있습니다.
 
-
 ---
-(Mainly used)
 ### 1. BE
 
-* Java, Spring, Spring boot
-* JPA
+(Mainly used)
+
+* Java, Spring boot
+* JPA, Querydsl
 * SQL (Oracle, Mysql)
 
+
+(Interested in and learnING)
+
+- Spring Cloud MSA
+- Kafka, MQ
+- WebFlux
+- Kotlin
+- Kubernetes
 
 
 
@@ -37,6 +45,8 @@ My repostitory :smile:
 
 * pytorch / tensorflow
 
+* R
+
 
 
 ### 3. FE
@@ -52,7 +62,6 @@ My repostitory :smile:
 * Hadoop, Hive
 * sqoop
 * Spark
-* R
 
 
 
