@@ -23,7 +23,7 @@ My repostitory :smile:
 (Interested in and learnING)
 
 - Spring Cloud MSA
-- Kafka, MQ
+- Kafka, Event-Driven Architecture
 - WebFlux
 - Kotlin
 - Kubernetes
