@@ -155,6 +155,86 @@
 
 
 
+# 4 주문 서비스 및 주문 생성 Saga 설계
+
+![](https://i.ibb.co/1RNRHrQ/image.png)
+
+## 1 OrderService 클래스
+
+```java
+@Transactional
+public class OrderService {
+    @Autowired
+    private SagaManager<CreateOrderService> createOrderService;
+    
+    @Autowired
+    private OrderRepository orderRepository;
+    
+    @Autowired
+    private DomainEventPublisher eventPublisher;
+    
+    public Order createOrder(OrderDetails orderDetails) {
+        ...
+        // 주문 생성
+        ResultWithEvents<Order> orderAndEvents = Order.createOrder(...);
+        Order order = orderAndEvents.result;
+        orderRepository.save(order);
+        
+        // 도메인 이벤트 발행
+        eventPublisher.publish(Order.class, Long.toString(order.getId()), orderAndEvents.events);
+        
+        // CreateOrderSaga 생성
+        CreateOrderSagaState data = new CreateOrderSagaState(order.getId(), orderDetails);
+        CreateOrderSagaManager.create(data, Order.class, order.getId());
+        
+        return order;
+    }
+}
+```
+
+## 2 주문 생성 사가 구현
+
+- `CreateOrderSaga` 오케스트레이터
+- 사가 기초 인터페이스 `SimpleSaga` 구현
+
+```java
+public class CreateOrderSaga implements SimpleSaga<CreateOrderSagaState> {
+    private SagaDefinition<CreateOrderSagaState> sagaDefinition;
+    
+    public CreateOrderSaga(OrderServiceProxy,
+                          ConsumeServiceProxy,
+                          KichenServiceProxy,
+                          AccountingServiceProxy ) {
+        this.sagaDefinition = step()
+            .withCompensation()
+            .step()
+            .invokeParticipant()
+            .step()
+            .invokeParticipant() // 포워드 트랜잭션 정의
+            .onReply() // 성공 응답을 수신하면 ... 호출
+            .withCompensatation() // 보상 트랜잭션 정의
+            .step()
+            .invokeParticipants()
+            .step()
+            ...
+            .build();
+    }
+}
+```
+
+- `CreateOrderSagaState` 클래스
+- `KitchenServiceProxy` 클래스
+
+### Eventuate Tram Saga 프레임워크
+
+![](https://i.ibb.co/tXxGJKV/image.png)
+
+
+
+
+
+
+
 
 
 
