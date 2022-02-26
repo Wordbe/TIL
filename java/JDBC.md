@@ -43,4 +43,50 @@
 >
 > - WAS 와 DBMS 사이
 > - DBCP 와 JDBC
+>
+> DDos 공격, 먹통이 된 WAS
+>
+> - DDoS 공격 차단, 네트워크 복구 시점에서도 30분 동안이나 정지
+> - 30분 지난 후 Exception 발생시키며 서비스가 복구됨
+>
+> JDBC 드라이버
+>
+> ![](https://d2.naver.com/content/images/2015/06/helloworld-1321-1.png)
+>
+> WAS 와 DBMS 의 통신 시 타임아웃 계층
+>
+> ![](https://d2.naver.com/content/images/2015/06/helloworld-1321-2.png)
+>
+> - 하위 레벨의 타임아웃이 정상 동작해야 상위 레벨의 타임아웃도 정상 동작한다. (상위는 하위에 의존성을 가진다.)
+> - 예를 들어 JDBC Drvier SocketTimeout 이 잘 동작해야, 그 보다 상위인 StatementTimeout 과 TransactionTimeout 이 잘 동작한다.
+
+
+
+# 커넥션 풀 동작
+
+## 오류1 : MySQL 서버에서 끊어버린 Idle 상태의 커넥션
+
+- MySQL 입장에서 JDBC 커넥션이 idle 인 상태
+- wait_timeout (기본 28800초 = 8시간) 이상 사용되지 않을 경우 해당 커넥션 close 하여 할당된 리소스를 회수한다.
+- TCP 레벨에서 해당 socket 이 정리가 되더라도, JDBC 드라이버나 커넥션 풀에서는 close 여부를 알 수 없다. 커넥션 사용하려고 할 때 비로소 문제가 있는 것을 알게 된다.
+- `commons-dbcp`, `tomcat-jdbc-pool`, `hikariCP` 모두 커넥션을 관리하는 별도 쓰레드가존재.
+  - 일정한 주기로 valid 여부를 확한하여 MySQL 서버에서 인지하는 커넥션의 idle 시간을 초기화한다.
+- `commons-dbcp` 에서는 Evictor 쓰레드가 커넥션 풀에 instance lock 을 잡아 서비스 성능에 영향을 준다.
+  - 하지만 `tomcat-jdbc-pool` 에서는 쉽게 조절할 수 있다.
+- `hikariCP` 는 커넥션 풀 유효검사에 대한 철학이 다르다.
+  - 잦은 valid 여부는 DBMS 에 과한 부하를 발생한다는 주장이다.
+  - 최소 idle 개수 이상의 커넥션이 있을 경우, 설정한 타임아웃이 지난 커넥션을 제거한다.
+
+## 오류 2 : SocketTimeout 옵션을 Response Timeout 성격으로 사용
+
+- slow query 경우 TCP socketTimeout 옵션을 Response Timeout 성격으로 잘못 사용하고 있는 상황
+- TCP socketTimeout 대신 스프링에서 Transaction TImeout 이나 JDBC 레벨의 StatementTimeout (queryTimeout) 옵션 등을 설정해서 사용하는 것을 권장
+
+
+
+
+
+
+
+
 
