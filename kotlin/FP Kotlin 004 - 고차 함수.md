@@ -86,6 +86,87 @@ class PartialFunction<in P, out R> (
 
 - 부분 함수와 이름은 비슷하지만 관계는 없다.
 - 매개변수의 일부만 전달받았을 때, 제공받는 매개변수만 가지고 부분 적용 함수를 생성한다.
+- 부분 적용 함수는코드를 재사용하기 위해서 쓸 수 도 있지만, 커링 함수(curried functions)를 만들기 위해서도 필요하다.
+
+
+
+
+# 4 커링 함수
+
+- 커링(currying)은 여러 개의 매개변수를 받는 함수를 분리하여, 단일 매개변수로 받는 부분 적용 함수의 체인으로 만드는 방법이다.
+
+
+
+```kotlin
+fun multiThree(a: Int, b: Int, c: Int): Int = a * b * c
+
+fun main(args: Array<String>) {
+  println(multiThree(1, 2, 3))
+
+  val partial1 = multiThree(1)
+  val partial2 = partial1(2)
+  val partial3 = partial2(3)
+  println(partial3)
+  
+  println(multiThree(1)(2)(3))
+}
+
+// currying
+fun multiThree(a: Int) = { b: Int -> { c: Int -> a * b * c }}
+```
+
+
+
+커링의 장점
+
+- 부분 적용 함수를 다양하게 재사용 가능
+- 마지막 매개변수가 입력될 때까지 함수의 실행을 늦출 수 있다.
+
+
+
+코틀린용 커링 함수 추상화하기
+
+```kotlin
+fun <P1, P2, P3, R> ((P1, P2, P3) -> R).curried(): (P1) -> (P2) -> (P3) -> R = 
+  { p1: P1 -> { p2: P2 -> { p3: P3 -> this(p1, p2, p3) } } }
+
+fun <P1, P2, P3, R> ((P1) -> (P2) -> (P3) -> R).uncurried(): (P1, P2, P3) -> R =
+  { p1: P1, p2: P2, p3: P3 -> this(p1)(p2)(p3) }
+```
+
+
+
+# 5 합성 함수
+
+- 함수를 매개변수로 받고, 함수를 반환할 수 있는 고차 함수를 이용해 두 개의 함수를 결합하는 것
+
+
+
+> 포인트 프리 스타일 (point free style) 프로그래밍
+>
+> - 함수 합성을 사용해서 매개변수나 타입 선언 없이 함수를 만드는 방식
+> - 가독성 높이고 간결하게 한다.
+
+```kotlin
+val absolute = { i: List<Int> -> i.map { it -> abs(it) }}
+val negatvie = { i: List<Int> -> i.map { it -> -it }}
+val minimum = { i: List<Int> -> i.min() }
+
+minimum(negative(absolute(listOf(3, -1, 5, -2, -4, 8, 14))))
+
+
+
+// 합성 함수를 위한 확장 함수 정의
+infix fun <F, G, R> ((F) -> R).compose(g: (G) -> F): (G) -> R {
+  return { gInput: G -> this(g(gInput)) }
+}
+
+val composed = minimum composed negative compose absolute
+println(composed(listOf(3, -1, 5, -2, -4, 8, 14)))
+```
+
+
+
 
 
 
