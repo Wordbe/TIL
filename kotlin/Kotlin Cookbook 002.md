@@ -14,6 +14,88 @@
 
 
 
+## 1 알고리즘에서 fold 사용하기
+
+- 반복 알고리즘을 함수형 방식으로 구현
+
+- `fold` 함수로 시퀀스나 컬레션을 하나의 값으로 축약(reduce)한다.
+
+  ```kotlin
+  inline fun <R> Iterable<T>.fold(
+  	initial: R,
+    operation: (acc: R, T) -> R
+  ): R
+  ```
+
+  - 똑같은 함수가 `Array`, `IntArray`, `DoubleArray` 등 명시적 타입 배열에 정의돼 있다.
+
+
+
+```kotlin
+fun sum(vararg nums: Int) = 
+	nums.fold(0) { acc, n -> acc + n }
+```
+
+```kotlin
+fun recursiveFactorial(n: Long): BigInteger =
+	when(n) {
+    0L, 1L -> BigInteger.ONE
+    else -> BigInteger.valueOf(n) * recursiveFactorial(n - 1)
+  }
+
+fun factorialFold(n: Long): BigInteger =
+	when(n) {
+    0L, 1L -> BigInteger.ONE
+    else -> (2..n).fold(BigInteger.ONE) { acc, i -> 
+    	acc * BigInteger.valueOf(i) }
+  }
+```
+
+
+
+## 2 reduce 함수를 사용해 축약하기
+
+- 비어 있지 않은 컬렉션의 값을 축약하고 싶다. 이 떄 누적자의 초기값을 설정하고 싶지 않다.
+
+  - `fold` 대신 `reduce` 를 사용한다.
+
+  ```kotlin
+  inline fun <S, T : S> Iterable<T>.reduce(
+  	operation: (acc: S, T) -> S
+  ): S
+  ```
+
+  ```kotlin
+  public inline fun IntArray.reduce(
+  	operation: (acc: Int, Int) -> Int): Int {
+    if (isEmpty())
+    	throw UnsupportedOperationException("Empty array can't be reduced.")
+    var accumulator = this[0]
+    for (index in 1..lastIndex)
+    	accumulator = operation(accumulator, this[index])
+    return accumulator
+  }
+  ```
+
+  - 비어있는 컬렉션은 예외를 발생시킨다.
+  - 누적자(accumulator)는 컬렉션의 첫 번째 원소로 초기화 한다.
+
+
+
+## 3 꼬리 재귀 적용하기
+
+- 재귀 프로세스 실행시 필요한 메모리를 최소화하려면
+  - `tailrec` 키워드를 사용한다.
+- 재귀 호출에서 스택 프레임을 많이 호출하면 `StackOverFlowError` 가 난다.
+- `tailrec` 스택 프레임을 재활용하는 코드로 컴파일시 변환해준다.
+- 표현은 재귀함수로 가독성 좋게 표현하면서도, 컴파일시는 메모리 효율적인 반복문으로 변환해준다.
+- 조건
+  - 함수는 반드시 수행하는 마지막 연산으로 자신을 호출해야 한다. (꼬리 재귀)
+  - try / catch / finally 블록 안에서는 tailrec 을 사용할 수 없다.
+  - JVM 백엔드에서만 꼬리 재귀가 지원된다.
+
+
+
 
 
 # 13 코루틴과 구조적 동시성
