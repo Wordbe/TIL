@@ -96,7 +96,66 @@ fun factorialFold(n: Long): BigInteger =
 
 
 
+---
 
+
+
+# 5 컬렉션
+
+- 코틀린은 흥미로운 메서드를 컬렉션 클래스에 직접 추가한다.
+
+
+
+## 1 배열 다루기
+
+- 자바와 다르게 코틀린에서 Array 는 클래스
+
+- `arrayOf` 팩토리 메소드 제공
+
+- `Array` 는 퍼블릭 생성자 하나 제공
+
+  ```kotlin
+  val squares = Array(5) { i -> (i * i).toString() }
+  ```
+
+- `squares[1]` 처럼 대괄호를 사용해 배열 원소에 접근할 때 호출되는 public 연산자 메소드 get 과 set 이 정의되어 있다.
+
+- 오토박싱, 언박싱 비용을 방지할 수 있는 기본 타입을 나타내는 클래스가 있다.
+
+  - `BooleanArray`, `ByteArray`, `ShortArray` 등
+
+- `.indices`
+
+- `.withIndex()`
+
+
+
+## 2 컬렉션 생성하기
+
+- list, set, map 생성
+
+- listOf, setOf, mapOf, mutableListOf, mutableSetOf, mutableMapOf
+
+  ```kotlin
+  public fun <T> listOf(vararg elements: T): List<T> =
+  	if (elements.size > 0) elements.asList() else emptyList()
+  ```
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+---
 
 # 13 코루틴과 구조적 동시성
 
