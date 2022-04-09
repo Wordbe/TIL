@@ -448,11 +448,105 @@ val sequence1 = sequence {
 
 ---
 
+# 7 영역 함수
+
+- 코틀린 표준 라이브러리에는 객체 컨텍스트 안에서 코드 블록을 실행할 목적으로 만든 다수의 함수가 포함돼 있다.
+- 영역함수 `let`, `run`, `apply`, `also`
+
+
+
+## 1 apply 로 객체 생성 후에 초기화하기
+
+- `apply` 블록은 이미 인스턴스화된 객체의 추가 설정을 위해 사용하는 가장 일반적 방법이다.
+
+- apply 함수 사용해서 객체 사용하기 전에 생성자만으로 할 수 없는 초기화한다.
+
+- this 를 인자로 전달하고, 리턴한다.
+
+  ```kotlin
+  inline fun <T> T.apply(block: T.() -> Unit): T
+  ```
+
+  ```kotlin
+  @Repository
+  class JdbcOfficerDAO(private val jdbcTemplate: JdbcTemplate) {
+    private val insertOfficer = SimpleJdbcInsert(jdbcTemplate)
+    	.withTableName("OFFICERS")
+    	.usingGeneratedKeyColumns("id")
+    
+    fun save(officer: Officer) =
+    	officer.apply {
+        id = insertOfficer.executeAndReturnKey(
+        	mapOf("rank" to rank,
+               "first_name" to first,
+               "last_name" to last)
+        )
+      }
+  }
+  ```
+  
+  - `Officer` 인스턴스는 this 로서 apply 블록에 전달되기 때문에 블록 안에서 rank, first, last 속성에 접근할 수 있다.
+  - `Officer` 의 id 속성은 apply 블록 안에서 갱신된 다음 `Officer` 인스턴스가 리턴된다.
+  - 이처럼 결과가 컨텍스트 객체가 되어야 한다면 apply 블록은 유용하다.
+
+
+
+## 2 부수효과 위해 also 사용하기
+
+- 코드 흐름을 방해하지 않고 메시지를 출력하거나 다른 부수 효과를 생성하고 싶다.
+
+  ```kotlin
+  public inline fun <T> T.also(
+  	block: (T) -> Unit
+  ): T
+  ```
+
+  ```kotlin
+  val book = createBook()
+  	.also { println(it) }
+  	.also { Logger.getAnonymousLogger().info(it.toString()) }
+  ```
+
+  - 블록 안에서 객체를 it 이라고 언급한다.
+
+
+
+## 3 let 함수와 엘비스 연산자 사용하기
+
+- 널이 아닌 레퍼런스의 코드 블록을 실행하고 싶지만, 레퍼런스가 널이라면 기본값을 리턴하고 싶다.
+
+  ```kotlin
+  public inline fun <T, R> T.let(
+  	block: (T) -> R
+  ): R
+  ```
+
+  - let 함수는 컨텍스트 객체가 아닌 블록의 결과를 리턴한다.
+
+```kotlin
+fun processNullableString(str: String?) =
+	str?.let {
+    when {
+      it.isEmpty() -> "Empty"
+      it.isBlank() -> "Blank"
+      else -> it.capitalize()
+    }
+  } ?: "Null"
+```
 
 
 
 
 
+## 4 임시 변수로 let 사용하기
+
+- 연산 결과를 임시 변수에 할당하지 않고 처리하고 싶다.
+  - 연산에 let 호출을 연쇄하고, let에 제공한 람다 또는 함수 레퍼런스 안에서 그 결과를 처리한다.
+
+```kotlin
+val numbers = mutableListOf("one", "two", "three", "four", "five")
+numbers.map { it.length }.filter { it > 3 }.let(::println)
+```
 
 
 
