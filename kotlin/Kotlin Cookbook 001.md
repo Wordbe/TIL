@@ -278,72 +278,100 @@ public class Nothing private constructor()
 
 
 
-
-
 ---
 
 
 
+# 4 함수형 프로그래밍
 
-
-# 12 스프링 프레임워크
-
-## 1 확장을 위해 스프링 관리 빈 클래스 오픈하기
-
-- 스프링은 개발자가 작성한 클래스를 확장하는 프록시를 생성해야 한다.
-- 코틀린 클래스는 기본적으로 닫혀있다. (final)
-- 이를 해결하려면 all-open 플러그인을 사용한다.
-  - 명시적으로 `open` 키워드를 추가하지 않아도 된다.
-  - kotlin-spring 플러그인이 더 적합할 수도 있다.
-  - 아래 스프링 어노테이션 클래스를 열도록 설정되어 있다.
-    - `@Component`, `@Async`, `@Transactional`, `@Cacheable`, `@SpringBootTest`
+- 함수형 프로그래밍은
+  - 불변성을 선호하고
+  - 순수함수를 사용하는 경우 동시성을 쉽게 구현할 수 있으며
+  - 반복보다는 변형을 사용하고
+  - 조건문보다는 필터를 사용하는 코딩 스타일을 말한다.
 
 
 
-## 2 data 클래스로 persistence 구현하기
+## 1 알고리즘에서 fold 사용하기
 
-- JPA 에서 기본 생성자가 필수이지만, data 클래스에는 기본 생성자가 없다.
-  - `no-arg` 플러그인 추가 : 코틀린 엔티티에 기본 생성자를 자동으로 추가한다. 
-  - `plugin-jpa` 는 아래 어노테이션이 붙은 객체에 기본생성자를 추가한다.
-    - `@Entity`, `@Embeddable`, `@MapperSuperClass`
-- val 속성과 함께 data 클래스를 생성하면 불변 객체가 생성되는데, JPA는 불변 객체로 작동하지 않는다.
-  - 속성에 var 을 사용하는 단순 클래스 사용을 추천한다.
-  - data class 사용 X
+- 반복 알고리즘을 함수형 방식으로 구현
+
+- `fold` 함수로 시퀀스나 컬레션을 하나의 값으로 축약(reduce)한다.
+
+  ```kotlin
+  inline fun <R> Iterable<T>.fold(
+  	initial: R,
+    operation: (acc: R, T) -> R
+  ): R
+  ```
+
+  - 똑같은 함수가 `Array`, `IntArray`, `DoubleArray` 등 명시적 타입 배열에 정의돼 있다.
 
 
-
-## 3 의존성 주입하기
-
-1. 생성자가 하나뿐일 때는 의존성을 속성으로 선언하면 자동으로 오토와이어링한다.
-2. `@Autowired` 를 생성자 인자에 명시적으로 사용한다.
-3. 다수의 의존성을 주입할 때는 `@Autowired` 를 생성자 함수 앞에 위치시켜 간소화한다.
-4. 필드 주입할 때는 `lateinit var` 구조를 사용한다.
-   - 언제든지 값을 변경할 수 있으므로, 생성자 주입을 더 선호한다.
-   - 속성이 필수가 아니라면 nullable 타입으로 선언할수도 있다.
 
 ```kotlin
-// 1
-@RestController
-class GreetingController(val service: GreetingService) { ... }
+fun sum(vararg nums: Int) = 
+	nums.fold(0) { acc, n -> acc + n }
+```
 
-// 2
-@RestController
-class GreetingController(@Autowired val service: GreetingService) { ... }
+```kotlin
+fun recursiveFactorial(n: Long): BigInteger =
+	when(n) {
+    0L, 1L -> BigInteger.ONE
+    else -> BigInteger.valueOf(n) * recursiveFactorial(n - 1)
+  }
 
-//3 
-@RestController
-class GreetingController @Autowired constructor(val service: GreetingService) { ... }
-
-// 4
-@RestController
-class GreetingController {
-  @Autowired
-  lateinit var service: GreetingService
-  ... 
-}
+fun factorialFold(n: Long): BigInteger =
+	when(n) {
+    0L, 1L -> BigInteger.ONE
+    else -> (2..n).fold(BigInteger.ONE) { acc, i -> 
+    	acc * BigInteger.valueOf(i) }
+  }
 ```
 
 
 
----
+## 2 reduce 함수를 사용해 축약하기
+
+- 비어 있지 않은 컬렉션의 값을 축약하고 싶다. 이 떄 누적자의 초기값을 설정하고 싶지 않다.
+
+  - `fold` 대신 `reduce` 를 사용한다.
+
+  ```kotlin
+  inline fun <S, T : S> Iterable<T>.reduce(
+  	operation: (acc: S, T) -> S
+  ): S
+  ```
+
+  ```kotlin
+  public inline fun IntArray.reduce(
+  	operation: (acc: Int, Int) -> Int): Int {
+    if (isEmpty())
+    	throw UnsupportedOperationException("Empty array can't be reduced.")
+    var accumulator = this[0]
+    for (index in 1..lastIndex)
+    	accumulator = operation(accumulator, this[index])
+    return accumulator
+  }
+  ```
+
+  - 비어있는 컬렉션은 예외를 발생시킨다.
+  - 누적자(accumulator)는 컬렉션의 첫 번째 원소로 초기화 한다.
+
+
+
+## 3 꼬리 재귀 적용하기
+
+- 재귀 프로세스 실행시 필요한 메모리를 최소화하려면
+  - `tailrec` 키워드를 사용한다.
+- 재귀 호출에서 스택 프레임을 많이 호출하면 `StackOverFlowError` 가 난다.
+- `tailrec` 스택 프레임을 재활용하는 코드로 컴파일시 변환해준다.
+- 표현은 재귀함수로 가독성 좋게 표현하면서도, 컴파일시는 메모리 효율적인 반복문으로 변환해준다.
+- 조건
+  - 함수는 반드시 수행하는 마지막 연산으로 자신을 호출해야 한다. (꼬리 재귀)
+  - try / catch / finally 블록 안에서는 tailrec 을 사용할 수 없다.
+  - JVM 백엔드에서만 꼬리 재귀가 지원된다.
+
+
+
 
