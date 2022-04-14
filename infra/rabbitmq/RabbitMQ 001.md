@@ -129,9 +129,143 @@
 
 ### 3 메시지를 프레임으로 마샬링하기
 
+- RabbitMQ에 메시지 발행시 메소드 프레임, 헤더 프레임, 바디 프레임을 사용한다.
+- 메소드 프레임
+  - Exchange, Routing key 를 함께 전송한다.
+- 콘텐츠 헤더 프레임
+  - 본문 크기, 메시지 속성
+- 하나 이상의 바디 프레임
+  - 정해진 본문 크기보다 크면 쪼개진다.
 
 
 
+
+
+- Basic.Publish 메소드 프레임
+  - RabbitMQ 서버에게 클라이언트가 메시지를 발행하려 하고 Basic.Properties 가 포함된 헤더 프레임이 있어야 함을 알린다.
+
+### 4 메소드 프레임 해부하기
+
+- 일반적으로 Basic.Publish RPC 요청은 단방향 통신이다.
+- Basic
+- Publish
+- Exchange name
+- Routing key-value
+- Mandatory flag
+
+### 5 콘텐츠 헤더 프레임
+
+### 6 바디 프레임
+
+## 3 프로토콜 사용하기
+
+- 메시지 큐 발행전 최소한 익스체인지와 큐를 설정한 후 둘을 연결해야 한다.
+
+### 1 익스체인지 선언
+
+- 클라이언트 → 서버 : Exchange.Declare
+- 서버는 Exchange.DeclareOk 응답
+
+### 2 큐 선언하기
+
+- 클라이언트 → 서버 : Queue.Declare
+- 서버는 Queue.DeclareOk 응답
+
+### 3 큐와 익스체인지 연결하기
+
+- 클라이언트 → 서버 : Queue.Bind
+- 서버는 Queue.BindOk 응답
+
+### 4 RabbitMQ 에 메시지 발행하기
+
+- 실제 메세지 본문을 전달하기 전에 클라이언트는 아래 프레임 헤더를 보낸다.
+  - Basic.Publish 메소드 프레임 : 익스체인지이름과 라우팅키가 들어있고, RabbitMQ 는 DB와 비교한다.
+  - 콘텐츠 헤더 프레임
+  - 바디 프레임
+
+### 5 RabbitMQ에서 메시지 소비하기
+
+- 소비자 애플리케이션은 Basic.Consume 명령을 실행해서 RabbitMQ 의 큐를 구독한다.
+- 서버는 Basic.ConsumeOk 응답
+- 서버는 그 후 Basic.Deliver, 헤더, 바디 전송
+- 클라이언트는 Baisc.Ack 응답
+
+
+
+<br />
+
+## 4 메시지 발행자 작성하기
+
+## 5 RabbitMQ에서 메시지 받기
+
+
+
+
+
+---
+
+# 3 메시지 속성 심층 탐사
+
+- 메시지를 설명하기 위한 일관된 방법으로 RabbitMQ 에 발행된 모든 메시지와 함께 전달되는 데이터구조인 AMQP 스펙의 Basic.Properties 를 사용한다.
+- Basic.Properties를 통해 메시지가 자동으로 제거되거나 처리하기 전에 메시지의 출처와 유형을 검증할 수 있는 consumer 애플리케이션 작성이 가능하다.
+
+
+
+## 1 메시지 속성 적절히 사용하기
+
+- 발행된 메시지는 
+  - Basic.Publish 메소드 프레임, 콘텐츠 헤더 프레임, 바디 프레임으로 구성된다.
+- 콘텐츠 헤더 프레임에 있는 메시지 속성은 Basic.Properties 데이터 구조로 사전에 정의한 집합이다.
+
+
+
+**[Basic.Properties 안의 속성들]**
+
+## 2 content-type 으로 명시적 메시지 계약 작성하기
+
+## 3 content-encoding 으로 메시지 크기 줄이기
+
+- AMQP 를 이용해 전달한 메시지는 기본적으로 압축이 되지 않는다.
+- 발행자는 메시지 발행 전 압축하고, 소비자로부터 메시지를 받아 압축을 풀 수 있다.
+- content-encoding 속성을 base64, gzip 하면 메시지 본문을 인코딩 가능하다.
+
+## 4 message-id, correlation-id 를 이용한 메시지 참조
+
+- AMQP 스펙에서 애플리케이션 용도로 지정됐다.
+- message-id : 메시지 식별 아이디
+- correlation-id : 메시지가 다른 메시지의 응답임을 나타낸다. 이전 메시지의 message-id 값으로 표현한다. 또는 트랜잭션 ID 나 다른 참조 데이터를 사용한다.
+
+## 5 timestamp 속성
+
+- RabbitMQ 를 통한 메시지 흐름에서 예상치 못한 동작을 진단할 때 유용하다.
+- 메시지 생성 시점을 기록하면, 메시지 발행시 성능을 측정할 수 있다.
+
+## 6 expiration 자동으로 메시지 만료하기
+
+## 7 delivery-mode 로 안정성과 속도 조절하기
+
+- RabbitMQ 가 메시지를 큐에 삽입할 때 디스크에 저장할지 메모리에 보관할지 지정한다.
+
+## 8 app-id, user-id 로 메시지의 출처 확인하기
+
+- app-id : publisher 애플리케이션에서 자유롭게 사용할 수 있는 문자열
+- user-id : 메시지 발행하는 RabbitMQ 사용자에 대해 유효성 검사
+
+## 9 type 으로 메시지 특정하기
+
+- 메시지의 내용을 설명한다. 메시지 유형 정의
+
+## 10 동적인 작업 흐름에는 reply-to 사용
+
+- RPC 스타일의 메시지 응답에 consumer 가 사용해야 하는 라우팅 키를 전달하는데 사용한다.
+
+## 11 headers 로 사용자 속성 지정
+
+- key-value 쌍
+
+## 12 priority
+
+- 0~9
 
 
 
