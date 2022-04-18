@@ -136,3 +136,117 @@
   ```
 
   
+
+---
+
+# 8 클러스터 간 메시지 발행
+
+- 데이터 센터 간 메시지를 전달하거나 RabbitMQ 를 업그레이드하거나 서로 다른 RabbitMQ 클러스터 간에 투명하게 메시지를 전달하는 경우 Federation 플러그인을 추천한다.
+- 메시지는 업스트림 노드에서 다운스트림 노드의 익스체인지 또는 큐로 전송된다.
+
+## 1 Federation Exchange, Federation Queue
+
+### 1 페더레이션 익스체인지
+
+- **업스트림 노드의 익스체인지에 발행된 메세지를 다운스트림 노드의 동일한 이름의 익스체인지에 투명하게 발행할 수 있다.**
+- RabbitMQ의 기본 제공 클러스터는 네트워크 파티션이 거의 일어나지 않고 대기 시간이 짧은 LAN 네트워크가 필요하다.
+- 인터넷과 같이 대기 시간이 긴 네트워크를 통해 연결할 때는 네트워크 파티션이 흔하게 발생한다.
+- 이 때 페더레이션 플러그인을 사용할 수 있다.
+  - 업스트림 페더레이션 플러그인은 메시지에 대해 독점적인 자동 관리 큐를 만들고 연결한다.
+  - 다운스트림의 페더레이션 플러그인은 소비자 및 발행자와 유사하게 동작하며, 업스트림 노드에서 메시지를 소비하고 실행 중인 노드에 메시지를 다시 발행한다.
+
+### 2 페더레이션 큐
+
+- 큐의 용량을 수평 확장할 수 있게 도와준다.
+- 메시지 발행자는 업스트림 노드 또는 클러스터를 사용하고 메시지는 모든 다운스트림 노드의 동일한 이름의 큐로 분산된다.
+
+
+
+## 2 RabbitMQ 가상 머신 만들기
+
+- Amazon EC2 에서 VM 설정을 위해 첫 번째 인스턴스를 생성하고, RabbitMQ 를 설치한다.
+- 인스턴스 이미지를 만들면 테스트를 위한 하나 이상의 서버 복사본을 만들 수 있다.
+
+### 1 첫 번째 인스턴스 생성하기
+
+- ubuntu
+
+- AMI
+
+- Free Tier Eligible - t2.micro
+
+- 방화벽 규칙 추가
+
+- 키 페어를 로컬 컴퓨터에 저장 - EC2 인스턴스에 SSH 접속을 위해 사용
+
+- EC2 인스턴스 접속
+
+  ```shell
+  ssh -i ~/rabbitmq-in-depth.pem.txt ubuntu@[public IP]
+  sudo su -
+  ```
+
+- 얼랭 및 RabbitMQ 설치
+
+  - 우분투에서 외부 저장소를 사용하려면 패키지 서명 키와 외부 저장소의 구성을 추가해야 한다.
+
+  ```shell
+  # RabitMQ
+  apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 6B73A36E6026DFCA
+  
+  # Erlang solutions
+  apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv D208507CA14F4FCA
+  
+  apt-get update
+  apt-get install -y rabbitmq-server
+  
+  # federation 기능 설정
+  rabbitmq-plugins enable rabbitmq_management rabbitmq_federation rabbitmq_federaiton_management
+  
+  # 기본 guest 사용자가 localhost 외에 IP 에서 로그인할 수 있도록 설정
+  vi /etc/rabbitmq/rabbitmq.config
+  [{rabbit, [{loopback_users, []}]}].
+  
+  service rabbitmq-server restart
+  
+  rabbitmqctl set_cluster_name cluster-a
+  ```
+
+### 2 EC2 인스턴스 복제
+
+- Create Image
+- http://[public IP]:15672 웹 브라우저로 열어 관리자 UI 에 접속
+- 클러스터 이름을 cluster-b 로 변경
+
+### 3 업스트림에 접속하기
+
+- Federation Upstreams 정의하기
+  - 새 업스트림 연결 추가 - AMQP URI 
+  - Name : cluster-a
+  - URI : amqp://54.84.218.56
+- 정책 정의
+  - Policies
+  - cluster-a 노드에서 익스체인지 선언
+  - cluster-b 노드에서도 익스체인지 선언
+  - cluster-b 노드가 업스트림 cluster-a 에 연결
+  - cluster-b 에 test 큐 정의
+  - demo 바인딩 키를 사용해 테스트 익스체인지에 연결한다. → cluster-b 에서 바인딩이 설정되고 cluster-a 에서 test 익스체인지에 대한 메시지 Federation 이 설정된다.
+  - Publish Message 로 페이로드 필드에 원하는 내용을 담아 테스트해본다.
+  - cluster-b 에 접속 후 Get Messages 를 클릭하여 확인
+- 업스트림 집합 활용
+- 리던던시 제공
+  - 다운스트림 노드가 클러스터의 모든 노드에 연결될 수 있다.
+  - 클러스터의 노드 1이 다운되더라도, 클러스터 노드 2를 통해 메시지를 수신할 수 있다.
+- 지리적으로 분산된 애플리케이션
+- 업스트림 집합 만들기
+
+### 4 양방향 페더레이션 익스체인지
+
+- 업스트림의 max-hops 로 조정. 기본값 1
+- 발행된 메시지는 다운스트림에 전달되었다가 다시 업스트림으로 발행된다.
+- 양방향 모드 페더레이션은 결함 내성 기법의 다중 데이터센터 애플리케이션 구조를 만드는데 적합하다.
+
+### 5 클러스터 업그레이드를 위한 Federation
+
+- 클러스터 크기가 큰 경우 한 노드의 트래픽 유입을 제한하고, 클러스터에서 노드를 제거하고 업그레이드 할 수 있다.
+
